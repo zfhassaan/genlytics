@@ -1,0 +1,31 @@
+{
+    "name": "zfhassaan/genlytics",
+    "description": "A Simple Laravel 9.1 Package For Google Analytics v4",
+    "type": "library",
+    "require": {
+        "google/apiclient": "^2.12",
+        "php": "^8.1"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "zfhassaan\\genlytics\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Hassaan Ali",
+            "email": "zfhassaan@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "zfhassaan\\genlytics\\AnalyticsServiceProvider"
+            ],
+            "aliases": {
+                "genlytics": "zfhassaan\\genlytics\\AnalyticsFacade"
+            }
+        }
+    }
+}
