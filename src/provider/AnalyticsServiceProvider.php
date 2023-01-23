@@ -1,6 +1,6 @@
 <?php
 
-namespace zfhassaan\genlytics;
+namespace zfhassaan\genlytics\provider;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -14,7 +14,7 @@ class AnalyticsServiceProvider extends ServiceProvider
         if($this->app->runningInConsole())
         {
             $this->publishes([
-                __DIR__.'/../config/analytics.php'  => config_path('analytics.php'),
+                __DIR__.'/../../config/analytics.php'  => config_path('analytics.php'),
             ], 'config');
         }
     }
@@ -25,7 +25,7 @@ class AnalyticsServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__ . '/../config/analytics.php', 'analytics');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/analytics.php', 'analytics');
 
         // Register the main class to use with the facade
         $this->app->singleton('genltyics', function () {

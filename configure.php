@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+3#!/usr/bin/env php
 <?php
 
 function ask(string $question, string $default = ''): string

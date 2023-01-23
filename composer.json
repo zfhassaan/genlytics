@@ -1,6 +1,6 @@
 {
     "name": "zfhassaan/genlytics",
-    "description": "A Simple Laravel 9.1 Package For Google Analytics v4",
+    "description": "Genlytics is a powerful Google Analytics Composer package that allows for easy data collection, analysis, and visualization. Optimized for SEO, it helps improve website performance and drive more organic traffic.",
     "type": "library",
     "require": {
         "google/apiclient": "^2.12",
@@ -21,10 +21,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "zfhassaan\\genlytics\\AnalyticsServiceProvider"
+                "zfhassaan\\genlytics\\Provider\\AnalyticsServiceProvider"
             ],
             "aliases": {
-                "genlytics": "zfhassaan\\genlytics\\AnalyticsFacade"
+                "genlytics": "zfhassaan\\genlytics\\Facades\\AnalyticsFacade"
             }
         }
     }

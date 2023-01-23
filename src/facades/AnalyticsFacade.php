@@ -1,6 +1,6 @@
 <?php
 
-namespace zfhassaan\genlytics;
+namespace zfhassaan\genlytics\facades;
 
 use \Illuminate\Support\Facades\Facade;
 
