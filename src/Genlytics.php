@@ -6,7 +6,10 @@ use Google\ApiCore\ApiException;
 use Google\Service\ChromeUXReport\Date;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
-use Google\Analytics\Data\V1beta\BetaAnalyticsDataClient;
+//use Google\Analytics\Data\V1beta\BetaAnalyticsDataClient;
+
+use zfhassaan\genlytics\overrides\BetaAnalyticsDataClient;
+
 use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
