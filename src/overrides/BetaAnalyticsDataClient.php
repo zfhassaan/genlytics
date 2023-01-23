@@ -26,7 +26,8 @@
 
 namespace zfhassaan\genlytics\overrides;
 
-use Google\Analytics\Data\V1beta\Gapic\BetaAnalyticsDataGapicClient;
+//use Google\Analytics\Data\V1beta\Gapic\BetaAnalyticsDataGapicClient;
+use zfhassaan\genlytics\overrides\BetaAnalyticsDataGapicClient;
 
 class BetaAnalyticsDataClient extends BetaAnalyticsDataGapicClient
 {

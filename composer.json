@@ -12,7 +12,8 @@
         "grpc/grpc": "^1.13",
         "google/protobuf": "^3.21",
         "google/cloud-core": "^v1.48.1",
-        "google/grpc-gcp": "^0.2.1"
+        "google/grpc-gcp": "^0.2.1",
+        "google/auth": "^v1.24.0"
     },
     "license": "MIT",
     "autoload": {

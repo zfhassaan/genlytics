@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Google\Auth;
+namespace zfhassaan\overrides;
 
 use DomainException;
 use Google\Auth\Credentials\AppIdentityCredentials;
