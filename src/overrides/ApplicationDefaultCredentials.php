@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace zfhassaan\overrides;
+namespace zfhassaan\genlytics\overrides;
 
 use DomainException;
 use Google\Auth\Credentials\AppIdentityCredentials;
@@ -158,7 +158,10 @@ class ApplicationDefaultCredentials
         $defaultScope = null
     ) {
         $creds = null;
-        $jsonKey = env('GENLYTICS_CREDENTIALS');
+
+        $jsonKey = CredentialsLoader::fromWellKnownFile();
+//        $jsonKey = CredentialsLoader::fromEnv()
+//            ?: CredentialsLoader::fromWellKnownFile();
         $anyScope = $scope ?: $defaultScope;
 
         if (!$httpHandler) {

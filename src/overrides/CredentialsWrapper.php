@@ -7,7 +7,7 @@ use Exception;
 use Google\ApiCore\ValidationException;
 use Google\ApiCore\ValidationTrait;
 //use Google\Auth\ApplicationDefaultCredentials;
-use zfhassaan\overrides\ApplicationDefaultCredentials;
+use zfhassaan\genlytics\overrides\ApplicationDefaultCredentials;
 use Google\Auth\Cache\MemoryCacheItemPool;
 use Google\Auth\Credentials\ServiceAccountCredentials;
 use Google\Auth\CredentialsLoader;

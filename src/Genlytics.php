@@ -19,7 +19,7 @@ use Google\Service\AnalyticsReporting\DimensionFilter;
 class Genlytics
 {
     protected string $property_id;
-    protected string $client;
+    protected mixed $client;
 
     /**
      * Default Constructor for Genlytics
