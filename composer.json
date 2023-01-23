@@ -4,7 +4,9 @@
     "type": "library",
     "require": {
         "google/apiclient": "^2.12",
-        "php": "^8.1"
+        "php": "^8.1",
+        "google/analytics-data": "^0.9.0",
+        "google/gax": "^1.18"
     },
     "license": "MIT",
     "autoload": {
