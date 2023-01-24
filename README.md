@@ -1,3 +1,13 @@
+<!--suppress ALL -->
+<p align="center">
+
+  <!-- <h3 align="center">Payfast</h3> -->
+</p>
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/zfhassaan/genlytics.svg?style=flat-square)](https://packagist.org/packages/zfhassaan/genlytics)
+[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Total Downloads](https://img.shields.io/packagist/dt/zfhassaan/genlytics.svg?style=flat-square)](https://packagist.org/packages/zfhassaan/genlytics)
+
 
 ### Disclaimer 
 The google UA Property is going away from July 2023. Google is implementing the Google Analytics V4. 
