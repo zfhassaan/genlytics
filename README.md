@@ -5,7 +5,7 @@
 </p>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/zfhassaan/genlytics.svg?style=flat-square)](https://packagist.org/packages/zfhassaan/genlytics)
-[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Total Downloads](https://img.shields.io/packagist/dt/zfhassaan/genlytics.svg?style=flat-square)](https://packagist.org/packages/zfhassaan/genlytics)
 
 
