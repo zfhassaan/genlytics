@@ -20,7 +20,7 @@ The Google Analytics data will only be available through the GCP API
 
 ### About
 
-Genlytics is a powerful Google Analytics package for Laravel, designed to help businesses and developers easily track and analyze website traffic and user behavior. Our package integrates seamlessly with your Laravel application, allowing you to access all of the features and functionality of Google Analytics without the need for any additional code. With Genlytics, you can easily track page views, user sessions, and conversion rates, as well as gain valuable insights into your audience and website performance. Whether you're a small business looking to improve your online presence, or a developer looking to add analytics functionality to your Laravel app, Genlytics has everything you need to succeed.
+Genlytics is a powerful Google Analytics package for Laravel, designed to help businesses and developers easily track and analyze website traffic and user behavior. Our package integrates seamlessly with your Laravel application, allowing you to access all of the features and functionality of Google Analytics without the need for any additional code. With Genlytics, you can easily track page views, user sessions, and conversion rates, as well as gain valuable insights into your audience and website performance. Whether you're a small business looking to improve your online presence, or a developer looking to add analytics functionality to your Laravel app, Genlytics has everything you need to succeed. _The package was created to fetch Google Analytics data in a laravel dashboard_
 
 ### Intended Audience
 This document is for developers who want to fetch Google Analytics Data into their Laravel website and
