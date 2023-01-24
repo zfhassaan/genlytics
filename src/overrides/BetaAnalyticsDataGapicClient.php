@@ -53,7 +53,6 @@ use Google\Analytics\Data\V1beta\RunReportRequest;
 use Google\Analytics\Data\V1beta\RunReportResponse;
 use Google\ApiCore\ApiException;
 use Google\ApiCore\CredentialsWrapper;
-//use Google\ApiCore\GapicClientTrait;
 use zfhassaan\genlytics\overrides\GapicClientTrait;
 use Google\ApiCore\PathTemplate;
 use Google\ApiCore\RequestParamsHeaderDescriptor;

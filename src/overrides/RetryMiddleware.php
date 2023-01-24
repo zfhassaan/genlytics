@@ -5,9 +5,7 @@ namespace zfhassaan\genlytics\overrides;
 
 use Google\ApiCore\ApiException;
 use Google\ApiCore\ApiStatus;
-//use Google\ApiCore\Call;
 use zfhassaan\genlytics\overrides\Call;
-//use Google\ApiCore\RetrySettings;
 use zfhassaan\genlytics\overrides\RetrySettings;
 use GuzzleHttp\Promise\PromiseInterface;
 

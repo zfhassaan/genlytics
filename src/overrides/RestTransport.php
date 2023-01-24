@@ -12,7 +12,6 @@ use Google\ApiCore\Transport\HttpUnaryTransportTrait;
 use Google\ApiCore\Transport\Rest\RestServerStreamingCall;
 use Google\ApiCore\Transport\TransportInterface;
 use Google\ApiCore\ValidationException;
-//use Google\ApiCore\ValidationTrait;
 use zfhassaan\genlytics\overrides\ValidationTrait;
 use Google\Protobuf\Internal\Message;
 use GuzzleHttp\Exception\RequestException;

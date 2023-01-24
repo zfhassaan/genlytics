@@ -160,8 +160,6 @@ class ApplicationDefaultCredentials
         $creds = null;
 
         $jsonKey = CredentialsLoader::fromWellKnownFile();
-//        $jsonKey = CredentialsLoader::fromEnv()
-//            ?: CredentialsLoader::fromWellKnownFile();
         $anyScope = $scope ?: $defaultScope;
 
         if (!$httpHandler) {

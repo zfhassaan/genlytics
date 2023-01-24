@@ -3,7 +3,6 @@
 namespace zfhassaan\genlytics\overrides;
 
 use Google\ApiCore\BidiStream;
-//use Google\ApiCore\Call;
 use zfhassaan\genlytics\overrides\Call;
 use Google\ApiCore\ClientStream;
 use Google\ApiCore\ServerStream;

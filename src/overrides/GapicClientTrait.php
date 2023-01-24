@@ -34,16 +34,13 @@ namespace zfhassaan\genlytics\overrides;
 
 use Google\ApiCore\LongRunning\OperationsClient;
 use zfhassaan\genlytics\overrides\CredentialsWrapperMiddleware;
-//use Google\ApiCore\Middleware\FixedHeaderMiddleware;
 use zfhassaan\genlytics\overrides\FixedHeaderMiddleware;
 use Google\ApiCore\Middleware\OperationsMiddleware;
-//use Google\ApiCore\Middleware\OptionsFilterMiddleware;
 use zfhassaan\genlytics\overrides\OptionsFilterMiddleware;
 use Google\ApiCore\Middleware\PagedMiddleware;
 use zfhassaan\genlytics\overrides\RetryMiddleware;
 use Google\ApiCore\Transport\GrpcFallbackTransport;
 use Google\ApiCore\Transport\GrpcTransport;
-//use Google\ApiCore\Transport\RestTransport;
 use zfhassaan\genlytics\overrides\RestTransport;
 use Google\ApiCore\Transport\TransportInterface;
 use Google\Auth\CredentialsLoader;
