@@ -5,7 +5,7 @@ Genlytics, a powerful Google Analytics package for Laravel, takes security serio
 ### Reporting a Vulnerability
 If you believe you have discovered a security vulnerability in Genlytics, please report it to us immediately. Please do not file a public issue or disclose the vulnerability until we have had a chance to investigate and address the issue.
 
-To report a vulnerability, please send an email to security@genlytics.com. We will investigate all reported vulnerabilities as soon as possible and take appropriate actions to protect our users' data.
+To report a vulnerability, please send an email to zfhassaan@gmail.com. We will investigate all reported vulnerabilities as soon as possible and take appropriate actions to protect our users' data.
 
 ### Secure Credentials
 When using Genlytics, it is important to ensure that your Google Analytics property ID and service account credentials are kept secure. These credentials should not be hardcoded in your application or committed to version control. Instead, they should be stored in environment variables or a secure configuration file.
