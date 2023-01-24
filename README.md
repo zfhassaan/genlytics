@@ -63,7 +63,7 @@ In your config/app.php file, add the following line to the providers array:
     * Package Service Providers...
     */
     ...
-    \zfhassaan\genlytics\Provider\AnalyticsServiceProvider::class,
+    \zfhassaan\genlytics\provider\AnalyticsServiceProvider::class,
     ...
 ```
 
@@ -72,7 +72,7 @@ In the aliases array of the same file, add the following line:
 ```php
     'aliases' => Facade::defaultAliases()->merge([
     ...
-        'Genlytics' => \zfhassaan\genlytics\Facades\AnalyticsFacade::class,
+        'Genlytics' => \zfhassaan\genlytics\facades\AnalyticsFacade::class,
     ...
     ])->toArray(),
 ```
