@@ -85,3 +85,27 @@ Publish the package assets by running the following command:
 
 and publish the `zfhassaan\genlytics\provider\AnalyticsServiceProvider` resources to the laravel app. 
 
+### Usage
+Genlytics is a powerful Google Analytics package for Laravel that allows you to easily track and analyze website traffic and user behavior. To start using Genlytics, you can create an instance of the package by initializing it like this:
+
+```php 
+$analytics = new Genlytics();
+```
+You can then use the package's methods to run various reports. For example, you can run a report for active users within a specific date range by calling the runReports method like this:
+
+```php
+$period = ['start_date' => $request->period['start_date'],'end_date'=> $request->period['end_date']];
+$active_users = $analytics->runReports($period,['name' => $state],['name' => 'activeUsers'] );
+```
+
+In addition to running reports, Genlytics also provides a method to fetch real-time analytics data using runRealTime function. For example:
+
+```php
+$analytics->runRealTime(['name' => 'pagePath'],['name' => 'pageviews']);
+```
+Genlytics also provides a method RunDimensionReport to fetch the dimension, for example:
+
+```php 
+$analytics->RunDimensionReport(['start_date' => '2022-01-01','end_date' => '2022-01-31'],'browser');
+```
+These methods allows to easily access the data we need to make data-driven decisions for business.
