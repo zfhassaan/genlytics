@@ -27,7 +27,7 @@ class RestTransport implements TransportInterface
     use ValidationTrait;
     use ServiceAddressTrait;
     use HttpUnaryTransportTrait {
-        startServerStreamingCall as protected unsupportedServerStreamingCall;
+        HttpUnaryTransportTrait::startServerStreamingCall as protected unsupportedServerStreamingCall;
     }
 
     /**
