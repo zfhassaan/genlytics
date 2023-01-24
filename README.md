@@ -37,6 +37,29 @@ you need to make data-driven decisions for your business.
 ### Prerequisites
 Before integrating Genlytics, a powerful Google Analytics package for Laravel, into your application, it's essential to have a property created on Google Analytics v4 and data stream set up. This will ensure that all of your website's data is being properly collected and tracked by Google Analytics. Once the property and data stream are in place, you can easily integrate Genlytics with your Laravel application, providing you with valuable insights into your website traffic, user behavior, and conversion rates. With the ability to access all of the features and functionality of Google Analytics, Genlytics makes it simple for businesses and developers to understand their audience and improve their online performance.
 
+### Enable API and Create Service Account
+
+To get started using Analytics Reporting API v4, you need to first use the setup tool, which guides you through creating a project in the Google API Console, enabling the API, and creating credentials.
+
+### Create credentials
+##### Note: When prompted click Furnish a new private key and for the Key type select JSON, and save the generated key as client_secrets.json; you will need it later in the tutorial.
+
+1. Open the Service accounts page. If prompted, select a project.
+2. Click _+ Create Service Account_, enter a name and description for the service account. You can use the default service account ID, or choose a different, unique one. When done click Create.
+3. The Service account permissions (optional) section that follows is not required. Click Continue.
+4. On the Grant users access to this service account screen, scroll down to the Create key section. Click add Create key.
+5. In the side panel that appears, select the format for your key: JSON is recommended.
+6. Click Create. Your new public/private key pair is generated and downloaded to your machine; it serves as the only copy of this key. For information on how to store it securely, see Managing service account keys.
+7. Click Close on the Private key saved to your computer dialog, then click Done to return to the table of your service accounts.
+
+##### Add service account to the Google Analytics account
+The newly created service account will have an email address that looks similar to:
+```bash
+quickstart@PROJECT-ID.iam.gserviceaccount.com
+```
+Use this email address to add a user to the Google Analytics view you want to access via the API. For this package only Read & Analyze permissions are needed.
+
+
 ### Installation
 You can install the package via composer
 ```bash
