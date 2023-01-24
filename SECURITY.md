@@ -19,4 +19,14 @@ If you have any questions or concerns about the security of Genlytics, please co
 We appreciate your help in keeping Genlytics secure for the Laravel community.
 
 
+## Supported Versions
+
+Supported PHP Versions for Jazzcash. You can add support for other versions as well.
+
+| Version | Supported          |
+| ------- | ------------------ |
+| 8.1.x   | :white_check_mark: |
+| 8.0.x   | :white_check_mark: |
+| 7.0.x   | :x:                |
+| < 7.0   | :x:                |
 
