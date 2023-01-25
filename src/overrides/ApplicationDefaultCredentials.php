@@ -28,6 +28,7 @@ use Google\Auth\Middleware\ProxyAuthTokenMiddleware;
 use Google\Auth\Subscriber\AuthTokenSubscriber;
 use GuzzleHttp\Client;
 use InvalidArgumentException;
+use Google\Auth\GCECache;
 use Psr\Cache\CacheItemPoolInterface;
 
 /**
