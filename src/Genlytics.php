@@ -47,6 +47,7 @@ class Genlytics
      */
     public function runReports(Array $period, Array $dimension, Array $metrics ): JsonResponse
     {
+        try{
         $response = $this->client->runReport([
             'property' => $this->property_id,
             'dateRanges' => [new DateRange($period)],
@@ -54,6 +55,9 @@ class Genlytics
             'metrics' => [new Metric($metrics)]
         ]);
         return $this->returnJson($response);
+     } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
     }
 
     /**
@@ -65,12 +69,16 @@ class Genlytics
      */
     public function runRealTime(Array $dimension, Array $metrics): JsonResponse
     {
+        try{
         $response = $this->client->runRealtimeReport([
             'property'=> $this->property_id,
             'dimensions'=>[new Dimension($dimension)],
             'metrics'=>[new Metric($metrics)]
         ]);
         return $this->returnJson($response);
+         } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
     }
 
 
@@ -83,11 +91,15 @@ class Genlytics
      */
     public function RunDimensionReport(Array $period,$dimension): mixed
     {
+        try{
         return $this->client->runReport([
             'property' => $this->property_id,
             'dateRanges' => [new DateRange($period)],
             'dimensions' => [new Dimension($dimension)]
         ]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
     }
 
     /**
@@ -98,10 +110,14 @@ class Genlytics
      */
     protected function returnJson($response): JsonResponse
     {
+        try{
         $result = [];
         foreach ($response->getRows() as $row) {
             $result[] = ['dimension' => $row->getDImensionValues()[0]->getValue(), 'metric' => $row->getMetricValues()[0]->getValue()];
         }
         return response()->json($result);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
     }
 }
