@@ -124,7 +124,52 @@ $active_users = $analytics->runReports($period,['name' => $state],['name' => 'ac
 In addition to running reports, Genlytics also provides a method to fetch real-time analytics data using runRealTime function. For example:
 
 ```php
-$analytics->runRealTime(['name' => 'pagePath'],['name' => 'pageviews']);
+
+    // For Single Dimension and Metric
+    $dimensions = ['name' => 'browser']; //1
+    $metrics = ['name' => 'activeUsers']; //1
+    $period = [['start_date' => '30daysAgo', 'end_date' => 'today']];
+    $result = $analytics->runReports($period, $dimensions, $metrics);
+
+    // For Multiple Dimensions and Metrics
+        try {
+            $analytics = new Genlytics();
+
+            $dimensions = [
+                ['name' => 'browser'], //1
+                ['name' => 'country'], //2
+                ['name' => 'date'], //3
+                ['name' => 'city'], //4
+                ['name' => 'dateHour'], //5
+                ['name' => 'firstUserSourceMedium'], //6
+                ['name' => 'mobileDeviceMarketingName'], //7
+                ['name' => 'operatingSystemWithVersion'], //8
+                ['name' => 'dayOfWeek'], //9
+                ['name' => 'defaultChannelGroup'], //10
+                ['name' => 'language'], //11
+                ['name' => 'dayOfWeekName'], //12
+                ['name' => 'deviceCategory'], //13
+                ['name' => 'contentGroup'], //14
+                ['name' => 'fullPageUrl'], //15
+            ];
+
+            $metrics = [
+                ['name' => 'activeUsers'], //1
+                ['name' => 'engagedSessions'], //2
+            ];
+            // Period can be from any range to any range which can be checked from the GA Query Builder
+            $period = [['start_date' => '30daysAgo', 'end_date' => 'today']];
+            $results = array_map(function ($d) use ($analytics, $metrics, $period) {
+                return array_map(function ($m) use ($analytics, $d, $period) {
+                    $result = $analytics->runReports($period, $d, $m);
+                    return $result->content();
+                }, $metrics);
+            }, $dimensions);
+
+            return response()->json(['analytics' => $results]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
+        }
 ```
 Genlytics also provides a method RunDimensionReport to fetch the dimension, for example:
 
