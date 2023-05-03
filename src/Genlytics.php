@@ -12,6 +12,7 @@ use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
 use Google\Auth\CredentialsLoader;
 use Google\Service\AnalyticsReporting\DimensionFilter;
+use Throwable;
 
 class Genlytics
 {
@@ -21,7 +22,8 @@ class Genlytics
     /**
      * Default Constructor for Genlytics
      */
-    public function __construct(){
+    public function __construct()
+    {
         $this->initConfig();
     }
 
@@ -30,7 +32,7 @@ class Genlytics
      */
     public function initConfig(): void
     {
-        $this->property_id = 'properties/'.config('analytics.property_id');
+        $this->property_id = 'properties/' . config('analytics.property_id');
         $this->client = new BetaAnalyticsDataClient();
     }
 
@@ -45,15 +47,22 @@ class Genlytics
      * @return JsonResponse
      * @throws ApiException
      */
-    public function runReports(Array $period, Array $dimension, Array $metrics ): JsonResponse
+    public function runReports(array $period, array $dimension, array $metrics): JsonResponse
     {
-        $response = $this->client->runReport([
-            'property' => $this->property_id,
-            'dateRanges' => [new DateRange($period)],
-            'dimensions' => [new Dimension($dimension)],
-            'metrics' => [new Metric($metrics)]
-        ]);
-        return $this->returnJson($response);
+
+        try {
+            $options = [
+                'property' => $this->property_id,
+                'dateRanges' => [new DateRange($period[0])],
+                'dimensions' => [new Dimension($dimension)],
+                'metrics' => [new Metric($metrics)]
+            ];
+
+            $response = $this->client->runReport($options);
+            return $this->returnJson($response);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -63,14 +72,18 @@ class Genlytics
      * @param array $metrics
      * @return JsonResponse
      */
-    public function runRealTime(Array $dimension, Array $metrics): JsonResponse
+    public function runRealTime(array $dimension, array $metrics): JsonResponse
     {
-        $response = $this->client->runRealtimeReport([
-            'property'=> $this->property_id,
-            'dimensions'=>[new Dimension($dimension)],
-            'metrics'=>[new Metric($metrics)]
-        ]);
-        return $this->returnJson($response);
+        try {
+            $response = $this->client->runRealtimeReport([
+                'property' => $this->property_id,
+                'dimensions' => [new Dimension($dimension)],
+                'metrics' => [new Metric($metrics)]
+            ]);
+            return $this->returnJson($response);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
 
@@ -81,13 +94,17 @@ class Genlytics
      * @param $dimension
      * @return mixed
      */
-    public function RunDimensionReport(Array $period,$dimension): mixed
+    public function RunDimensionReport(array $period, $dimension): mixed
     {
-        return $this->client->runReport([
-            'property' => $this->property_id,
-            'dateRanges' => [new DateRange($period)],
-            'dimensions' => [new Dimension($dimension)]
-        ]);
+        try {
+            return $this->client->runReport([
+                'property' => $this->property_id,
+                'dateRanges' => [new DateRange($period)],
+                'dimensions' => [new Dimension($dimension)]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -98,10 +115,14 @@ class Genlytics
      */
     protected function returnJson($response): JsonResponse
     {
-        $result = [];
-        foreach ($response->getRows() as $row) {
-            $result[] = ['dimension' => $row->getDImensionValues()[0]->getValue(), 'metric' => $row->getMetricValues()[0]->getValue()];
+        try {
+            $result = [];
+            foreach ($response->getRows() as $row) {
+                $result[] = ['dimension' => $row->getDImensionValues()[0]->getValue(), 'metric' => $row->getMetricValues()[0]->getValue()];
+            }
+            return response()->json($result);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
         }
-        return response()->json($result);
     }
 }
