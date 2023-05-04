@@ -2,6 +2,14 @@
 
 All notable changes to `genlytics` will be documented in this file.
 
+## v1.0.0  - 2023-05-03
+
+Initial Release for Genlytics
+
+- Real Time Reports with GA4 Support
+- Reports from a time date to a time date.
+- Exception Handling
+
 ## alpha-release - 2023-04-29
 
 Genlytics is a Google Analytics package specifically designed for Laravel to help businesses and developers easily track and analyze website traffic and user behavior.
