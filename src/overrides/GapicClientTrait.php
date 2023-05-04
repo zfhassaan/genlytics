@@ -43,7 +43,7 @@ use Google\ApiCore\Transport\GrpcFallbackTransport;
 use Google\ApiCore\Transport\GrpcTransport;
 use zfhassaan\genlytics\overrides\RestTransport;
 use Google\ApiCore\Transport\TransportInterface;
-use Google\Auth\CredentialsLoader;
+use Google\Auth\Credentialsloader;
 use Google\Auth\FetchAuthTokenInterface;
 use Google\LongRunning\Operation;
 use Google\Protobuf\Internal\Message;
@@ -235,8 +235,8 @@ trait GapicClientTrait
 
         // mTLS: detect and load the default clientCertSource if the environment variable
         // "GOOGLE_API_USE_CLIENT_CERTIFICATE" is true, and the cert source is available
-        if (empty($options['clientCertSource']) && CredentialsLoader::shouldLoadClientCertSource()) {
-            if ($defaultCertSource = CredentialsLoader::getDefaultClientCertSource()) {
+        if (empty($options['clientCertSource']) && Credentialsloader::shouldLoadClientCertSource()) {
+            if ($defaultCertSource = Credentialsloader::getDefaultClientCertSource()) {
                 $options['clientCertSource'] = function () use ($defaultCertSource) {
                     $cert = call_user_func($defaultCertSource);
 
