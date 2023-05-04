@@ -2,6 +2,10 @@
 
 All notable changes to `genlytics` will be documented in this file.
 
+## Patch fix for autoloading files - 2023-05-04
+
+Patch fix for autoloading files
+
 ## v1.0.0  - 2023-05-03
 
 Initial Release for Genlytics
