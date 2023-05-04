@@ -9,7 +9,7 @@ use Google\ApiCore\ValidationTrait;
 use zfhassaan\genlytics\overrides\ApplicationDefaultCredentials;
 use Google\Auth\Cache\MemoryCacheItemPool;
 use Google\Auth\Credentials\ServiceAccountCredentials;
-use Google\Auth\CredentialsLoader;
+use Google\Auth\Credentialsloader;
 use Google\Auth\FetchAuthTokenCache;
 use Google\Auth\FetchAuthTokenInterface;
 use Google\Auth\GetQuotaProjectInterface;
@@ -119,7 +119,7 @@ class CredentialsWrapper
                 $keyFile['quota_project_id'] = $args['quotaProject'];
             }
 
-            $loader = CredentialsLoader::makeCredentials(
+            $loader = Credentialsloader::makeCredentials(
                 $args['scopes'],
                 $keyFile,
                 $args['defaultScopes']

@@ -10,7 +10,7 @@ use zfhassaan\genlytics\overrides\BetaAnalyticsDataClient;
 use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
-use Google\Auth\CredentialsLoader;
+use Google\Auth\Credentialsloader;
 use Google\Service\AnalyticsReporting\DimensionFilter;
 use Throwable;
 

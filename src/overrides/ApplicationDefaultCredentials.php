@@ -160,7 +160,7 @@ class ApplicationDefaultCredentials
     ) {
         $creds = null;
 
-        $jsonKey = CredentialsLoader::fromWellKnownFile();
+        $jsonKey = Credentialsloader::fromWellKnownFile();
         $anyScope = $scope ?: $defaultScope;
 
         if (!$httpHandler) {
@@ -176,7 +176,7 @@ class ApplicationDefaultCredentials
             if ($quotaProject) {
                 $jsonKey['quota_project_id'] = $quotaProject;
             }
-            $creds = CredentialsLoader::makeCredentials(
+            $creds = Credentialsloader::makeCredentials(
                 $scope,
                 $jsonKey,
                 $defaultScope
@@ -272,8 +272,8 @@ class ApplicationDefaultCredentials
         CacheItemPoolInterface $cache = null
     ) {
         $creds = null;
-        $jsonKey = CredentialsLoader::fromEnv()
-            ?: CredentialsLoader::fromWellKnownFile();
+        $jsonKey = Credentialsloader::fromEnv()
+            ?: Credentialsloader::fromWellKnownFile();
 
         if (!$httpHandler) {
             if (!($client = HttpClientCache::getHttpClient())) {

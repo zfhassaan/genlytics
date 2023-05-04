@@ -13,10 +13,10 @@ use RuntimeException;
 use UnexpectedValueException;
 
 /**
- * CredentialsLoader contains the behaviour used to locate and find default
+ * Credentialsloader contains the behaviour used to locate and find default
  * credentials files on the file system.
  */
-abstract class CredentialsLoader implements
+abstract class Credentialsloader implements
     FetchAuthTokenInterface,
     UpdateMetadataInterface
 {
