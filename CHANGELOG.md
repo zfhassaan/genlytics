@@ -2,6 +2,16 @@
 
 All notable changes to `genlytics` will be documented in this file.
 
+## v1.0.2 - 2023-05-04
+
+Small Patch Fix for Credentials Loader
+
+### What's Changed
+
+- Credentialsloader patched by @salman-mahmood in https://github.com/zfhassaan/genlytics/pull/6
+
+**Full Changelog**: https://github.com/zfhassaan/genlytics/compare/v1.0.1...v1.0.2
+
 ## Patch fix for autoloading files - 2023-05-04
 
 Patch fix for autoloading files
