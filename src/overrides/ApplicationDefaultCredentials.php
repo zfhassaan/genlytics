@@ -30,6 +30,7 @@ use GuzzleHttp\Client;
 use InvalidArgumentException;
 use Google\Auth\GCECache;
 use Psr\Cache\CacheItemPoolInterface;
+use zfhassaan\genlytics\overrides\CredentialsLoader;
 
 /**
  * ApplicationDefaultCredentials obtains the default credentials for
