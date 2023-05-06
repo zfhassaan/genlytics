@@ -17,6 +17,9 @@ Prepare now by setting up and switching over to a Google Analytics 4 property._
 
 The Google Analytics data will only be available through the GCP API 
 
+### Pending Tasks
+- Creating Test cases for Genlytics Package 
+- Writing yml file for running tests
 
 ### About
 
