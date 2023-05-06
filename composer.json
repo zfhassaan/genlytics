@@ -36,5 +36,13 @@
                 "genlytics": "zfhassaan\\genlytics\\Facades\\AnalyticsFacade"
             }
         }
+    },
+    "scripts": {
+        "pre-install-cmd": [
+            "echo '#IStandWithPeace'"
+        ],
+        "post-install-cmd": [
+            "echo 'Thank you for installing this Genlytics.'"
+        ]
     }
 }

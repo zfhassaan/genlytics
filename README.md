@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <p align="center">
-
+    <img align="center" class="img-fluid" src="banner.jpeg"/>
   <!-- <h3 align="center">Payfast</h3> -->
 </p>
 
