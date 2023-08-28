@@ -53,7 +53,10 @@ class Genlytics
         try {
             $options = [
                 'property' => $this->property_id,
-                'dateRanges' => [new DateRange($period[0])],
+                'dateRanges' => [new DateRange([
+                    'start_date' => $period['start_date'],
+                    'end_date' => $period['end_date']
+                ])],
                 'dimensions' => [new Dimension($dimension)],
                 'metrics' => [new Metric($metrics)]
             ];
