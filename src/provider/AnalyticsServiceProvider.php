@@ -3,6 +3,7 @@
 namespace zfhassaan\genlytics\provider;
 
 use Illuminate\Support\ServiceProvider;
+use zfhassaan\genlytics\Genlytics;
 
 class AnalyticsServiceProvider extends ServiceProvider
 {

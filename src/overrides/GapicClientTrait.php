@@ -43,7 +43,7 @@ use Google\ApiCore\Transport\GrpcFallbackTransport;
 use Google\ApiCore\Transport\GrpcTransport;
 use zfhassaan\genlytics\overrides\RestTransport;
 use Google\ApiCore\Transport\TransportInterface;
-use Google\Auth\Credentialsloader;
+use zfhassaan\genlytics\overrides\Credentialsloader;
 use Google\Auth\FetchAuthTokenInterface;
 use Google\LongRunning\Operation;
 use Google\Protobuf\Internal\Message;
