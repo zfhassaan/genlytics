@@ -2,6 +2,18 @@
 
 All notable changes to `genlytics` will be documented in this file.
 
+## v1.0.3 - 2023-08-28
+
+### What's Changed
+
+- fix for Pull Request by @zfhassaan in https://github.com/zfhassaan/genlytics/pull/8
+
+### New Contributors
+
+- @zfhassaan made their first contribution in https://github.com/zfhassaan/genlytics/pull/8
+
+**Full Changelog**: https://github.com/zfhassaan/genlytics/compare/v1.0.2...v1.0.3
+
 ## v1.0.2 - 2023-05-04
 
 Small Patch Fix for Credentials Loader
