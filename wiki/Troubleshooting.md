@@ -290,8 +290,8 @@ app('genlytics'); // Should return Genlytics instance
 If you're still experiencing issues:
 
 1. Check [GitHub Issues](https://github.com/zfhassaan/genlytics/issues)
-2. Review [Usage Guide](Usage-Guide)
-3. Check [Configuration Guide](Configuration-Guide)
+2. Review [Usage Guide](Usage-Guide.md)
+3. Check [Configuration Guide](Configuration-Guide.md)
 4. Create a new issue with:
    - Error message
    - Configuration (without sensitive data)
