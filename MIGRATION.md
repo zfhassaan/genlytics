@@ -2,7 +2,7 @@
 
 ## Overview
 
-Genlytics has been completely rewritten following SOLID principles, implementing Repository pattern, Events, and optimized caching with background processing.
+Genlytics has been completely rewritten implementing Repository pattern, Events, and optimized caching with background processing.
 
 ## Breaking Changes
 

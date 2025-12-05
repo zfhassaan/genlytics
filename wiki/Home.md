@@ -21,7 +21,7 @@ Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel that provid
 - Real-time analytics updates
 - Event-driven architecture
 - Repository pattern implementation
-- SOLID principles throughout
+- Clean architecture throughout
 
 ## Features
 

@@ -2,13 +2,13 @@
 
 ## Overview
 
-The Genlytics package has been completely rewritten following SOLID principles, implementing Repository pattern, Events, optimized caching, background processing, and real-time updates.
+The Genlytics package has been completely rewritten implementing Repository pattern, Events, optimized caching, background processing, and real-time updates.
 
 ## What Was Changed
 
 ### 1. Architecture Refactoring
 
-#### SOLID Principles Implementation
+#### Architecture Implementation
 - **Single Responsibility**: Each class has one clear purpose
 - **Open/Closed**: Extensible via interfaces without modification
 - **Liskov Substitution**: All implementations are substitutable

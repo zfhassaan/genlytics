@@ -15,7 +15,7 @@ use Throwable;
 
 /**
  * Analytics Service
- * Main service class following SOLID principles
+ * Main service class for orchestrating analytics operations
  * Single Responsibility: Orchestrates analytics operations
  * Dependency Inversion: Depends on interfaces, not concrete classes
  */

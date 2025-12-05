@@ -85,7 +85,7 @@ vendor/bin/php-cs-fixer fix --dry-run --diff
 - Follow PSR-12 coding standard
 - Use type hints everywhere
 - Add PHPDoc comments
-- Follow SOLID principles
+- Follow clean code practices
 
 ### Code Style
 
@@ -104,7 +104,7 @@ vendor/bin/php-cs-fixer fix
 
 ## Architecture Guidelines
 
-### SOLID Principles
+### Design Principles
 
 - **Single Responsibility**: Each class has one reason to change
 - **Open/Closed**: Open for extension, closed for modification

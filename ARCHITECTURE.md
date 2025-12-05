@@ -2,11 +2,11 @@
 
 ## Overview
 
-Genlytics has been redesigned following SOLID principles, Repository pattern, and Event-driven architecture for optimal performance and maintainability.
+Genlytics has been redesigned with Repository pattern and Event-driven architecture for optimal performance and maintainability.
 
 ## Architecture Principles
 
-### SOLID Principles
+### Design Principles
 
 1. **Single Responsibility Principle (SRP)**
    - Each class has one reason to change

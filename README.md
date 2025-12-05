@@ -18,7 +18,7 @@ The Google Analytics data will only be available through the GCP API.
 
 ## About
 
-Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel, completely rewritten following **SOLID principles** with **Repository pattern**, **Event-driven architecture**, and **performance optimizations**. The package integrates seamlessly with your Laravel application, providing intelligent caching, background job processing, and real-time analytics updates.
+Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel, completely rewritten with **Repository pattern**, **Event-driven architecture**, and **performance optimizations**. The package integrates seamlessly with your Laravel application, providing intelligent caching, background job processing, and real-time analytics updates.
 
 ### Key Features
 
@@ -517,7 +517,7 @@ See [CHANGELOG.md](CHANGELOG.md) for all changes.
 
 ### v2.0.0 - Major Rewrite
 
-- Complete rewrite following SOLID principles
+- Complete rewrite with modern architecture
 - Repository pattern implementation
 - Event-driven architecture
 - Intelligent caching system
