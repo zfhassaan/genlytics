@@ -2,130 +2,145 @@
 
 namespace zfhassaan\genlytics;
 
-use Google\ApiCore\ApiException;
-use Google\Service\ChromeUXReport\Date;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
-use zfhassaan\genlytics\overrides\BetaAnalyticsDataClient;
-use Google\Analytics\Data\V1beta\DateRange;
-use Google\Analytics\Data\V1beta\Dimension;
-use Google\Analytics\Data\V1beta\Metric;
-use Google\Auth\Credentialsloader;
-use Google\Service\AnalyticsReporting\DimensionFilter;
-use Throwable;
+use zfhassaan\genlytics\Services\AnalyticsService;
 
+/**
+ * Genlytics Main Class
+ * Facade-friendly wrapper that maintains backward compatibility
+ * Following Facade Pattern and Adapter Pattern
+ */
 class Genlytics
 {
-    protected string $property_id;
-    protected mixed $client;
+    protected AnalyticsService $service;
 
     /**
-     * Default Constructor for Genlytics
+     * @param AnalyticsService $service
      */
-    public function __construct()
+    public function __construct(AnalyticsService $service)
     {
-        $this->initConfig();
+        $this->service = $service;
     }
 
     /**
-     * Initial Configuration
-     */
-    public function initConfig(): void
-    {
-        $this->property_id = 'properties/' . config('analytics.property_id');
-        $this->client = new BetaAnalyticsDataClient();
-    }
-
-
-    /**
-     * Run Report for any Dimension and Metrics. This can fetch data with respective to date and also with respective
-     * of the metrics provided. i.e. Demographics, Medium etc.
+     * Run Report for any Dimension and Metrics
+     * Maintains backward compatibility with original API
      *
-     * @param array $period
-     * @param array $dimension
-     * @param array $metrics
+     * @param array $period Date range with 'start_date' and 'end_date'
+     * @param array $dimension Single dimension array or array of dimensions
+     * @param array $metrics Single metric array or array of metrics
+     * @param array $options Additional options
+     * @param bool $forceRefresh Force refresh from API
      * @return JsonResponse
-     * @throws ApiException
      */
-    public function runReports(array $period, array $dimension, array $metrics): JsonResponse
-    {
+    public function runReports(
+        array $period,
+        array $dimension,
+        array $metrics,
+        array $options = [],
+        bool $forceRefresh = false
+    ): JsonResponse {
+        // Normalize dimensions and metrics to arrays
+        $dimensions = $this->normalizeToArray($dimension);
+        $metricsArray = $this->normalizeToArray($metrics);
 
-        try {
-            $options = [
-                'property' => $this->property_id,
-                'dateRanges' => [new DateRange([
-                    'start_date' => $period['start_date'],
-                    'end_date' => $period['end_date']
-                ])],
-                'dimensions' => [new Dimension($dimension)],
-                'metrics' => [new Metric($metrics)]
-            ];
-
-            $response = $this->client->runReport($options);
-            return $this->returnJson($response);
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
-        }
+        return $this->service->runReports(
+            $period,
+            $dimensions,
+            $metricsArray,
+            $options,
+            $forceRefresh
+        );
     }
 
     /**
      * Get Real Time Data from Analytics
      *
-     * @param array $dimension
-     * @param array $metrics
+     * @param array $dimension Single dimension array or array of dimensions
+     * @param array $metrics Single metric array or array of metrics
+     * @param array $options Additional options
+     * @param bool $forceRefresh Force refresh from API
      * @return JsonResponse
      */
-    public function runRealTime(array $dimension, array $metrics): JsonResponse
-    {
-        try {
-            $response = $this->client->runRealtimeReport([
-                'property' => $this->property_id,
-                'dimensions' => [new Dimension($dimension)],
-                'metrics' => [new Metric($metrics)]
-            ]);
-            return $this->returnJson($response);
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
-        }
-    }
+    public function runRealTime(
+        array $dimension,
+        array $metrics,
+        array $options = [],
+        bool $forceRefresh = false
+    ): JsonResponse {
+        $dimensions = $this->normalizeToArray($dimension);
+        $metricsArray = $this->normalizeToArray($metrics);
 
+        return $this->service->runRealTime(
+            $dimensions,
+            $metricsArray,
+            $options,
+            $forceRefresh
+        );
+    }
 
     /**
      * Run only Dimensions for Analytics with Time Duration
      *
-     * @param array $period
-     * @param $dimension
-     * @return mixed
+     * @param array $period Date range with 'start_date' and 'end_date'
+     * @param string|array $dimension Dimension name or array
+     * @param array $options Additional options
+     * @param bool $forceRefresh Force refresh from API
+     * @return JsonResponse
      */
-    public function RunDimensionReport(array $period, $dimension): mixed
-    {
-        try {
-            return $this->client->runReport([
-                'property' => $this->property_id,
-                'dateRanges' => [new DateRange($period)],
-                'dimensions' => [new Dimension($dimension)]
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
-        }
+    public function runDimensionReport(
+        array $period,
+        $dimension,
+        array $options = [],
+        bool $forceRefresh = false
+    ): JsonResponse {
+        return $this->service->runDimensionReport(
+            $period,
+            $dimension,
+            $options,
+            $forceRefresh
+        );
     }
 
     /**
-     * Format the response from Analytics to JSON format.
+     * Get the underlying analytics service
+     * Useful for advanced usage
      *
-     * @param $response
-     * @return JsonResponse
+     * @return AnalyticsService
      */
-    protected function returnJson($response): JsonResponse
+    public function getService(): AnalyticsService
     {
-        try {
-            $result = [];
-            foreach ($response->getRows() as $row) {
-                $result[] = ['dimension' => $row->getDImensionValues()[0]->getValue(), 'metric' => $row->getMetricValues()[0]->getValue()];
-            }
-            return response()->json($result);
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, 'error' => $e->getMessage()], 400);
+        return $this->service;
+    }
+
+    /**
+     * Normalize input to array format
+     *
+     * @param mixed $input
+     * @return array
+     */
+    protected function normalizeToArray($input): array
+    {
+        if (empty($input)) {
+            return [];
         }
+
+        // If already an array of arrays, return as is
+        if (is_array($input) && isset($input[0]) && is_array($input[0])) {
+            return $input;
+        }
+
+        // If single array with 'name' key, wrap in array
+        if (is_array($input) && isset($input['name'])) {
+            return [$input];
+        }
+
+        // If string, convert to array format
+        if (is_string($input)) {
+            return [['name' => $input]];
+        }
+
+        // If already array, return as is
+        return is_array($input) ? $input : [];
     }
 }

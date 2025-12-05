@@ -33,7 +33,7 @@
                 "zfhassaan\\genlytics\\provider\\AnalyticsServiceProvider"
             ],
             "aliases": {
-                "genlytics": "zfhassaan\\genlytics\\Facades\\AnalyticsFacade"
+                "genlytics": "zfhassaan\\genlytics\\facades\\AnalyticsFacade"
             }
         }
     },

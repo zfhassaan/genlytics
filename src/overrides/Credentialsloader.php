@@ -96,7 +96,13 @@ abstract class Credentialsloader implements
 
         $path = implode(DIRECTORY_SEPARATOR, $path);
 
-        $path = base_path('service-account.json');
+        // Use config value if available, otherwise fall back to default
+        $configPath = config('analytics.service_account_credentials_json');
+        if ($configPath && file_exists($configPath)) {
+            $path = $configPath;
+        } else {
+            $path = base_path('service-account.json');
+        }
 
         if (!file_exists($path)) {
             return null;
