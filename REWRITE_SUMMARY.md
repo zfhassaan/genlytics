@@ -55,16 +55,16 @@ The Genlytics package has been completely rewritten following SOLID principles, 
 ### 3. Fixed Issues
 
 #### Critical Bugs Fixed
-- ✅ Fixed typo: `genltyics` → `genlytics` in service provider
-- ✅ Fixed method name: `getDImensionValues()` → `getDimensionValues()`
-- ✅ Fixed facade namespace case sensitivity
+- Fixed typo: `genltyics` → `genlytics` in service provider
+- Fixed method name: `getDImensionValues()` → `getDimensionValues()`
+- Fixed facade namespace case sensitivity
 
 #### Improvements
-- ✅ Proper error handling with specific exceptions
-- ✅ Comprehensive logging
-- ✅ Type safety improvements
-- ✅ Better null handling in DataTransformer
-- ✅ Credentials path now uses config instead of hardcoded value
+- Proper error handling with specific exceptions
+- Comprehensive logging
+- Type safety improvements
+- Better null handling in DataTransformer
+- Credentials path now uses config instead of hardcoded value
 
 ### 4. Performance Optimizations
 

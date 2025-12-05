@@ -22,16 +22,15 @@ Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel, completely
 
 ### Key Features
 
-- ✅ **SOLID Principles** - Clean, maintainable, and extensible code architecture
-- ✅ **Repository Pattern** - Abstracted data access layer for easy testing and extension
-- ✅ **Event-Driven** - Decoupled event system for extensibility
-- ✅ **Intelligent Caching** - Automatic cache management with configurable TTL (90%+ API call reduction)
-- ✅ **Background Jobs** - Non-blocking analytics queries for better performance
-- ✅ **Real-Time Updates** - Automatic refresh scheduling for live dashboards
-- ✅ **Type Safety** - Full type hints and comprehensive PHPDoc
-- ✅ **Error Handling** - Robust error handling with logging
-- ✅ **Comprehensive Tests** - 52 test cases with 83+ assertions
-- ✅ **Backward Compatible** - Existing code works without changes
+- **Repository Pattern** - Abstracted data access layer for easy testing and extension
+- **Event-Driven** - Decoupled event system for extensibility
+- **Intelligent Caching** - Automatic cache management with configurable TTL (90%+ API call reduction)
+- **Background Jobs** - Non-blocking analytics queries for better performance
+- **Real-Time Updates** - Automatic refresh scheduling for live dashboards
+- **Type Safety** - Full type hints and comprehensive PHPDoc
+- **Error Handling** - Robust error handling with logging
+- **Comprehensive Tests** - 52 test cases with 83+ assertions
+- **Backward Compatible** - Existing code works without changes
 
 ### Architecture Highlights
 
@@ -537,7 +536,7 @@ See [CHANGELOG.md](CHANGELOG.md) for all changes.
 
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
 
-## Credits
+## Author
 
 - **Author**: Hassaan Ali
 - **Email**: zfhassaan@gmail.com

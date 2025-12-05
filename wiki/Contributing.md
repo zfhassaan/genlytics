@@ -235,11 +235,11 @@ test: add repository tests
 
 ### Before Submitting
 
-1. ✅ Code follows standards
-2. ✅ Tests pass
-3. ✅ Documentation updated
-4. ✅ No linter errors
-5. ✅ Backward compatibility maintained (if applicable)
+1. Code follows standards
+2. Tests pass
+3. Documentation updated
+4. No linter errors
+5. Backward compatibility maintained (if applicable)
 
 ### PR Description Template
 
@@ -282,5 +282,5 @@ Contributors will be:
 - Mentioned in release notes
 - Credited in the project
 
-Thank you for contributing to Genlytics! 🎉
+Thank you for contributing to Genlytics!
 

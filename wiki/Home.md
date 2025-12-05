@@ -15,13 +15,13 @@ Welcome to the Genlytics Wiki! This wiki contains comprehensive documentation fo
 
 Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel that provides:
 
-- ✅ Easy integration with Google Analytics Data API
-- ✅ Intelligent caching system
-- ✅ Background job processing
-- ✅ Real-time analytics updates
-- ✅ Event-driven architecture
-- ✅ Repository pattern implementation
-- ✅ SOLID principles throughout
+- Easy integration with Google Analytics Data API
+- Intelligent caching system
+- Background job processing
+- Real-time analytics updates
+- Event-driven architecture
+- Repository pattern implementation
+- SOLID principles throughout
 
 ## Features
 

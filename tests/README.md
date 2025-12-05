@@ -90,15 +90,15 @@ Coverage report will be generated in `coverage/` directory.
 
 The test suite covers:
 
-- ✅ **Services**: CacheManager, DataTransformer, AnalyticsService
-- ✅ **Repositories**: AnalyticsRepository with mocked Google API client
-- ✅ **Events**: All event classes
-- ✅ **Jobs**: FetchAnalyticsDataJob
-- ✅ **Commands**: RefreshAnalyticsCache command
-- ✅ **Listeners**: UpdateRealTimeCache listener
-- ✅ **Main Class**: Genlytics facade wrapper
-- ✅ **Integration**: Service provider registration
-- ✅ **Feature**: End-to-end functionality
+- **Services**: CacheManager, DataTransformer, AnalyticsService
+- **Repositories**: AnalyticsRepository with mocked Google API client
+- **Events**: All event classes
+- **Jobs**: FetchAnalyticsDataJob
+- **Commands**: RefreshAnalyticsCache command
+- **Listeners**: UpdateRealTimeCache listener
+- **Main Class**: Genlytics facade wrapper
+- **Integration**: Service provider registration
+- **Feature**: End-to-end functionality
 
 ## Writing New Tests
 
