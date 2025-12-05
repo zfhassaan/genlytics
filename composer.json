@@ -21,6 +21,16 @@
             "zfhassaan\\genlytics\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "zfhassaan\\genlytics\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^10.0",
+        "mockery/mockery": "^1.5"
+    },
     "authors": [
         {
             "name": "Hassaan Ali",
@@ -43,6 +53,8 @@
         ],
         "post-install-cmd": [
             "echo 'Thank you for installing this Genlytics.'"
-        ]
+        ],
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage"
     }
 }

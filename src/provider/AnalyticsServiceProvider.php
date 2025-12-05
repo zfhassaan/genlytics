@@ -72,9 +72,20 @@ class AnalyticsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
+            // Publish configuration
             $this->publishes([
                 __DIR__ . '/../../config/analytics.php' => config_path('analytics.php'),
-            ], 'config');
+            ], ['genlytics-config', 'config']);
+
+            // Publish test cases
+            $this->publishes([
+                __DIR__ . '/../../tests/TestCase.stub' => base_path('tests/Genlytics/TestCase.php'),
+                __DIR__ . '/../../tests/Unit' => base_path('tests/Genlytics/Unit'),
+                __DIR__ . '/../../tests/Feature' => base_path('tests/Genlytics/Feature'),
+                __DIR__ . '/../../tests/Integration' => base_path('tests/Genlytics/Integration'),
+                __DIR__ . '/../../tests/README.md' => base_path('tests/Genlytics/README.md'),
+                __DIR__ . '/../../tests/PUBLISHING.md' => base_path('tests/Genlytics/PUBLISHING.md'),
+            ], ['genlytics-tests', 'tests']);
 
             // Register commands
             $this->commands([
@@ -89,5 +100,22 @@ class AnalyticsServiceProvider extends ServiceProvider
                 UpdateRealTimeCache::class
             );
         }
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array<int, string>
+     */
+    public function provides(): array
+    {
+        return [
+            'genlytics',
+            Genlytics::class,
+            AnalyticsService::class,
+            AnalyticsRepositoryInterface::class,
+            CacheManagerInterface::class,
+            DataTransformerInterface::class,
+        ];
     }
 }
