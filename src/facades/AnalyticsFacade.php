@@ -5,7 +5,7 @@ namespace zfhassaan\genlytics\facades;
 use \Illuminate\Support\Facades\Facade;
 
 /**
- * @see \zfhassaan\genlytics\Analytics
+ * @see \zfhassaan\genlytics\Genlytics
  */
 class AnalyticsFacade extends Facade
 {
