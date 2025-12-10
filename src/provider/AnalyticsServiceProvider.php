@@ -41,7 +41,17 @@ class AnalyticsServiceProvider extends ServiceProvider
         // Register Analytics Repository
         $this->app->singleton(AnalyticsRepositoryInterface::class, function ($app) {
             $propertyId = 'properties/' . config('analytics.property_id');
-            $client = new BetaAnalyticsDataClient();
+            
+            // Get credentials path from config
+            $credentialsPath = config('analytics.service_account_credentials_json');
+            
+            // Initialize client with credentials if available
+            $clientOptions = [];
+            if ($credentialsPath && file_exists($credentialsPath)) {
+                $clientOptions['credentials'] = $credentialsPath;
+            }
+            
+            $client = new BetaAnalyticsDataClient($clientOptions);
             return new AnalyticsRepository($client, $propertyId);
         });
 
