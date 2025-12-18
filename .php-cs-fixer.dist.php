@@ -1,10 +1,15 @@
 <?php
 
-$rules = [
-    '@PSR2' => true,
-    'array_syntax' => ['syntax' => 'short'],
-    'no_unused_imports' => true,
-    'single_line_throw' => true,
-];
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
 
-return $rules;
+$finder = Finder::create()
+    ->in(__DIR__)
+    ->exclude(['vendor', 'node_modules']);
+
+return (new Config())
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@PSR12' => true,
+    ])
+    ->setFinder($finder);
