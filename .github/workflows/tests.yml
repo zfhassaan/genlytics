@@ -14,14 +14,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        # php: [8.1, 8.2, 8.3]
-        # laravel: [10.*, 11.*, 12.*]
-        # dependency-version: [prefer-lowest, prefer-stable]
-        php: [8.2]
-        laravel: [10.*]
-        dependency-version: [prefer-stable]
+        php: [8.1, 8.2, 8.3]
+        laravel: [10.*, 11.*, 12.*]
+        dependency-version: [prefer-lowest, prefer-stable]
         include:
           - laravel: 10.*
             testbench: 8.*
@@ -58,8 +55,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
-          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update --dev
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --with-all-dependencies
 
       - name: Execute tests
         run: vendor/bin/phpunit

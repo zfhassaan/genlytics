@@ -13,14 +13,6 @@ abstract class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Set default config values for testing
-        $this->app['config']->set('analytics.property_id', '123456789');
-        $this->app['config']->set('analytics.service_account_credentials_json', __DIR__ . '/fixtures/service-account.json');
-        $this->app['config']->set('analytics.enable_cache', true);
-        $this->app['config']->set('analytics.cache_lifetime_in_minutes', 60);
-        $this->app['config']->set('analytics.use_background_jobs', false);
-        $this->app['config']->set('analytics.enable_realtime_updates', false);
     }
 
     /**
@@ -67,6 +59,14 @@ abstract class TestCase extends Orchestra
 
         // Setup cache
         $app['config']->set('cache.default', 'array');
+
+        // Set default config values for testing
+        $app['config']->set('analytics.property_id', '123456789');
+        $app['config']->set('analytics.service_account_credentials_json', __DIR__ . '/fixtures/service-account.json');
+        $app['config']->set('analytics.enable_cache', true);
+        $app['config']->set('analytics.cache_lifetime_in_minutes', 60);
+        $app['config']->set('analytics.use_background_jobs', false);
+        $app['config']->set('analytics.enable_realtime_updates', false);
     }
 }
 
