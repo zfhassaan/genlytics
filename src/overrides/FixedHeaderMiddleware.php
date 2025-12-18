@@ -2,8 +2,8 @@
 
 namespace zfhassaan\genlytics\overrides;
 
-
 use zfhassaan\genlytics\overrides\Call;
+
 /**
  * Middleware to add fixed headers to an API call.
  */

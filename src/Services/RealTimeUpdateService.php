@@ -70,4 +70,3 @@ class RealTimeUpdateService
         $this->cacheManager->forget($cacheKey);
     }
 }
-

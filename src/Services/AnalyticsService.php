@@ -79,14 +79,14 @@ class AnalyticsService
             // Check cache first (unless force refresh)
             if ($this->enableCache && !$forceRefresh && $this->cacheManager->has($cacheKey)) {
                 $cachedData = $this->cacheManager->get($cacheKey);
-                
+
                 // Trigger background refresh for next time
                 if ($this->useBackgroundJobs) {
                     FetchAnalyticsDataJob::dispatch('report', $parameters, $cacheKey);
                 }
 
                 event(new AnalyticsDataFetched('report', $cachedData, $parameters, true));
-                
+
                 return $this->jsonResponse($cachedData);
             }
 
@@ -94,7 +94,7 @@ class AnalyticsService
             if ($this->useBackgroundJobs && !$forceRefresh) {
                 // Dispatch job for background processing
                 FetchAnalyticsDataJob::dispatch('report', $parameters, $cacheKey);
-                
+
                 // Return cached data if available, otherwise return empty with status
                 if ($this->cacheManager->has($cacheKey)) {
                     $cachedData = $this->cacheManager->get($cacheKey);
@@ -157,17 +157,17 @@ class AnalyticsService
             // Real-time data typically shouldn't be cached for long
             // But we can cache for a few seconds to reduce API calls
             $cacheKey = $this->cacheManager->generateKey('realtime', $parameters);
-            
+
             if ($this->enableCache && !$forceRefresh && $this->cacheManager->has($cacheKey)) {
                 $cachedData = $this->cacheManager->get($cacheKey);
-                
+
                 // Always refresh real-time data in background
                 if ($this->useBackgroundJobs) {
                     FetchAnalyticsDataJob::dispatch('realtime', $parameters, $cacheKey);
                 }
 
                 event(new AnalyticsDataFetched('realtime', $cachedData, $parameters, true));
-                
+
                 return $this->jsonResponse($cachedData);
             }
 
@@ -228,13 +228,13 @@ class AnalyticsService
             // Check cache
             if ($this->enableCache && !$forceRefresh && $this->cacheManager->has($cacheKey)) {
                 $cachedData = $this->cacheManager->get($cacheKey);
-                
+
                 if ($this->useBackgroundJobs) {
                     FetchAnalyticsDataJob::dispatch('dimension', $parameters, $cacheKey);
                 }
 
                 event(new AnalyticsDataFetched('dimension', $cachedData, $parameters, true));
-                
+
                 return $this->jsonResponse($cachedData);
             }
 
@@ -276,7 +276,7 @@ class AnalyticsService
     protected function jsonResponse(array $data, array $metadata = []): JsonResponse
     {
         $response = $this->transformer->toJsonFormat($data, true);
-        
+
         if (!empty($metadata)) {
             $response['metadata'] = array_merge($response['metadata'] ?? [], $metadata);
         }
@@ -284,4 +284,3 @@ class AnalyticsService
         return response()->json($response);
     }
 }
-

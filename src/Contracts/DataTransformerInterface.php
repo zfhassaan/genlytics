@@ -36,4 +36,3 @@ interface DataTransformerInterface
      */
     public function toJsonFormat(array $data, bool $includeMetadata = false): array;
 }
-

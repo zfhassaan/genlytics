@@ -10,7 +10,8 @@ use Illuminate\Queue\SerializesModels;
  */
 class AnalyticsCacheUpdated
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     /**
      * @param string $cacheKey Cache key that was updated
@@ -24,4 +25,3 @@ class AnalyticsCacheUpdated
     ) {
     }
 }
-

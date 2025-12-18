@@ -9,12 +9,12 @@ use Google\Protobuf\Internal\Message;
  */
 class Call
 {
-    const UNARY_CALL = 0;
-    const BIDI_STREAMING_CALL = 1;
-    const CLIENT_STREAMING_CALL = 2;
-    const SERVER_STREAMING_CALL = 3;
-    const LONGRUNNING_CALL = 4;
-    const PAGINATED_CALL = 5;
+    public const UNARY_CALL = 0;
+    public const BIDI_STREAMING_CALL = 1;
+    public const CLIENT_STREAMING_CALL = 2;
+    public const SERVER_STREAMING_CALL = 3;
+    public const LONGRUNNING_CALL = 4;
+    public const PAGINATED_CALL = 5;
 
     private $method;
     private $callType;
@@ -32,8 +32,8 @@ class Call
     public function __construct(
         string $method,
         string $decodeType = null,
-               $message = null,
-               $descriptor = [],
+        $message = null,
+        $descriptor = [],
         int $callType = \Google\ApiCore\Call::UNARY_CALL
     ) {
         $this->method = $method;

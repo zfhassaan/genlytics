@@ -11,7 +11,8 @@ use Illuminate\Queue\SerializesModels;
  */
 class AnalyticsDataRequested
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     /**
      * @param string $reportType Type of report requested
@@ -25,4 +26,3 @@ class AnalyticsDataRequested
     ) {
     }
 }
-

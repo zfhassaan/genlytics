@@ -2,7 +2,6 @@
 
 namespace zfhassaan\genlytics\overrides;
 
-
 use Google\ApiCore\ApiException;
 use Google\ApiCore\ApiStatus;
 use zfhassaan\genlytics\overrides\Call;

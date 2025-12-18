@@ -68,10 +68,10 @@ class CacheManager implements CacheManagerInterface
     {
         // Sort params for consistent key generation
         ksort($params);
-        
+
         // Create a hash of the parameters
         $hash = md5(json_encode($params));
-        
+
         return "{$type}:" . $hash;
     }
 
@@ -105,4 +105,3 @@ class CacheManager implements CacheManagerInterface
         return "{$this->prefix}:{$key}";
     }
 }
-

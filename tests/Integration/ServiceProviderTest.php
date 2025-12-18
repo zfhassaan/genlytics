@@ -17,7 +17,7 @@ class ServiceProviderTest extends TestCase
         if (!file_exists(config('analytics.service_account_credentials_json'))) {
             $this->markTestSkipped('Service account credentials not available for testing');
         }
-        
+
         $this->assertInstanceOf(
             CacheManagerInterface::class,
             app(CacheManagerInterface::class)
@@ -53,9 +53,8 @@ class ServiceProviderTest extends TestCase
     public function test_cache_manager_has_correct_lifetime()
     {
         $cacheManager = app(CacheManagerInterface::class);
-        
+
         $expectedLifetime = config('analytics.cache_lifetime_in_minutes', 1440) * 60;
         $this->assertEquals($expectedLifetime, $cacheManager->getLifetime());
     }
 }
-

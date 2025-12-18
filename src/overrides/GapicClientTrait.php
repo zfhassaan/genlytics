@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2018 Google LLC
  * All rights reserved.
@@ -451,7 +452,7 @@ trait GapicClientTrait
      */
     private function createTransport(
         string $apiEndpoint,
-               $transport,
+        $transport,
         array $transportConfig,
         callable $clientCertSource = null
     ) {
@@ -641,7 +642,7 @@ trait GapicClientTrait
         Message $request = null,
         array $optionalArgs = []
     ) {
-        $methodDescriptors =$this->validateCallConfig($methodName);
+        $methodDescriptors = $this->validateCallConfig($methodName);
         $callType = $methodDescriptors['callType'];
 
         // Prepare request-based headers, merge with user-provided headers,

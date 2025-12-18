@@ -25,13 +25,13 @@ class AnalyticsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         Event::fake();
-        
+
         $this->mockRepository = Mockery::mock(AnalyticsRepositoryInterface::class);
         $this->mockCacheManager = Mockery::mock(CacheManagerInterface::class);
         $this->mockTransformer = Mockery::mock(DataTransformerInterface::class);
-        
+
         $this->service = new AnalyticsService(
             $this->mockRepository,
             $this->mockCacheManager,
@@ -47,7 +47,7 @@ class AnalyticsServiceTest extends TestCase
         $dateRange = ['start_date' => '7daysAgo', 'end_date' => 'today'];
         $dimensions = [['name' => 'country']];
         $metrics = [['name' => 'activeUsers']];
-        
+
         $mockResponse = $this->createMock(\Google\Analytics\Data\V1beta\RunReportResponse::class);
         $transformedData = [
             ['dimensions' => ['country' => 'US'], 'metrics' => ['activeUsers' => '100']]
@@ -97,7 +97,7 @@ class AnalyticsServiceTest extends TestCase
         $dateRange = ['start_date' => '7daysAgo', 'end_date' => 'today'];
         $dimensions = [['name' => 'country']];
         $metrics = [['name' => 'activeUsers']];
-        
+
         $cachedData = [
             ['dimensions' => ['country' => 'US'], 'metrics' => ['activeUsers' => '100']]
         ];
@@ -136,7 +136,7 @@ class AnalyticsServiceTest extends TestCase
     {
         $dimensions = [['name' => 'country']];
         $metrics = [['name' => 'activeUsers']];
-        
+
         $mockResponse = $this->createMock(\Google\Analytics\Data\V1beta\RunRealtimeReportResponse::class);
         $transformedData = [
             ['dimensions' => ['country' => 'US'], 'metrics' => ['activeUsers' => '50']]
@@ -213,7 +213,7 @@ class AnalyticsServiceTest extends TestCase
         $dateRange = ['start_date' => '7daysAgo', 'end_date' => 'today'];
         $dimensions = [['name' => 'country']];
         $metrics = [['name' => 'activeUsers']];
-        
+
         $mockResponse = $this->createMock(\Google\Analytics\Data\V1beta\RunReportResponse::class);
         $transformedData = [
             ['dimensions' => ['country' => 'US'], 'metrics' => ['activeUsers' => '100']]
@@ -256,4 +256,3 @@ class AnalyticsServiceTest extends TestCase
         parent::tearDown();
     }
 }
-

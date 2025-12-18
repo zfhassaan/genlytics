@@ -11,7 +11,8 @@ use Throwable;
  */
 class AnalyticsQueryFailed
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     /**
      * @param string $reportType Type of report that failed
@@ -25,4 +26,3 @@ class AnalyticsQueryFailed
     ) {
     }
 }
-

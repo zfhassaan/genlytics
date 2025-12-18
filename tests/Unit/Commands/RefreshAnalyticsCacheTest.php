@@ -54,4 +54,3 @@ class RefreshAnalyticsCacheTest extends TestCase
         parent::tearDown();
     }
 }
-

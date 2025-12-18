@@ -2,7 +2,6 @@
 
 namespace zfhassaan\genlytics\overrides;
 
-
 use zfhassaan\genlytics\overrides\Call;
 use Google\ApiCore\OperationResponse;
 use Google\Protobuf\Internal\Message;
@@ -23,7 +22,7 @@ class OperationsMiddleware
 
     public function __construct(
         callable $nextHandler,
-                 $operationsClient,
+        $operationsClient,
         array $descriptor
     ) {
         $this->nextHandler = $nextHandler;

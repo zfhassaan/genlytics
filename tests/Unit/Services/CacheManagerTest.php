@@ -108,4 +108,3 @@ class CacheManagerTest extends TestCase
         $this->assertTrue($result);
     }
 }
-

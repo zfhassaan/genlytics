@@ -175,4 +175,3 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
         }, $dateRanges);
     }
 }
-
