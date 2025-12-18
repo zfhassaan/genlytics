@@ -15,9 +15,9 @@ class GenlyticsIntegrationTest extends TestCase
         if (!file_exists(config('analytics.service_account_credentials_json'))) {
             $this->markTestSkipped('Service account credentials not available for testing');
         }
-        
+
         $genlytics = app('genlytics');
-        
+
         $this->assertInstanceOf(Genlytics::class, $genlytics);
     }
 
@@ -27,16 +27,16 @@ class GenlyticsIntegrationTest extends TestCase
         if (!file_exists(config('analytics.service_account_credentials_json'))) {
             $this->markTestSkipped('Service account credentials not available for testing');
         }
-        
+
         $genlytics = \Genlytics::getFacadeRoot();
-        
+
         $this->assertInstanceOf(Genlytics::class, $genlytics);
     }
 
     public function test_configuration_is_loaded()
     {
         $propertyId = config('analytics.property_id');
-        
+
         $this->assertNotNull($propertyId);
         $this->assertEquals('123456789', $propertyId);
     }
@@ -44,14 +44,14 @@ class GenlyticsIntegrationTest extends TestCase
     public function test_cache_manager_is_bound()
     {
         $cacheManager = app(\zfhassaan\genlytics\Contracts\CacheManagerInterface::class);
-        
+
         $this->assertInstanceOf(\zfhassaan\genlytics\Contracts\CacheManagerInterface::class, $cacheManager);
     }
 
     public function test_data_transformer_is_bound()
     {
         $transformer = app(\zfhassaan\genlytics\Contracts\DataTransformerInterface::class);
-        
+
         $this->assertInstanceOf(\zfhassaan\genlytics\Contracts\DataTransformerInterface::class, $transformer);
     }
 
@@ -61,9 +61,9 @@ class GenlyticsIntegrationTest extends TestCase
         if (!file_exists(config('analytics.service_account_credentials_json'))) {
             $this->markTestSkipped('Service account credentials not available for testing');
         }
-        
+
         $repository = app(\zfhassaan\genlytics\Contracts\AnalyticsRepositoryInterface::class);
-        
+
         $this->assertInstanceOf(\zfhassaan\genlytics\Contracts\AnalyticsRepositoryInterface::class, $repository);
     }
 
@@ -73,10 +73,9 @@ class GenlyticsIntegrationTest extends TestCase
         if (!file_exists(config('analytics.service_account_credentials_json'))) {
             $this->markTestSkipped('Service account credentials not available for testing');
         }
-        
+
         $service = app(\zfhassaan\genlytics\Services\AnalyticsService::class);
-        
+
         $this->assertInstanceOf(\zfhassaan\genlytics\Services\AnalyticsService::class, $service);
     }
 }
-

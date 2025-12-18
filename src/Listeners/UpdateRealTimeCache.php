@@ -32,4 +32,3 @@ class UpdateRealTimeCache implements ShouldQueue
         }
     }
 }
-

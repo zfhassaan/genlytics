@@ -4,6 +4,7 @@ namespace zfhassaan\genlytics\overrides;
 
 use Google\ApiCore\ArrayTrait;
 use zfhassaan\genlytics\overrides\Call;
+
 /**
  * Middleware which filters the $options array.
  */

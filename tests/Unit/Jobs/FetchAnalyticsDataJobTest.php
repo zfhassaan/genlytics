@@ -22,9 +22,9 @@ class FetchAnalyticsDataJobTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         Event::fake();
-        
+
         $this->mockRepository = Mockery::mock(AnalyticsRepositoryInterface::class);
         $this->mockCacheManager = Mockery::mock(CacheManagerInterface::class);
         $this->mockTransformer = Mockery::mock(DataTransformerInterface::class);
@@ -119,4 +119,3 @@ class FetchAnalyticsDataJobTest extends TestCase
         parent::tearDown();
     }
 }
-

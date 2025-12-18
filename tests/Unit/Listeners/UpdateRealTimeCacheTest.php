@@ -39,4 +39,3 @@ class UpdateRealTimeCacheTest extends TestCase
         Queue::assertNothingPushed();
     }
 }
-

@@ -109,7 +109,7 @@ class DataTransformerTest extends TestCase
         $rows = [];
         foreach ($dimensions as $index => $dimensionData) {
             $row = $this->createMock(Row::class);
-            
+
             $dimensionValues = [];
             foreach ($dimensionData as $key => $value) {
                 $dimValue = $this->createMock(DimensionValue::class);
@@ -160,7 +160,7 @@ class DataTransformerTest extends TestCase
     protected function createMockRealtimeReportResponse(): RunRealtimeReportResponse
     {
         $row = $this->createMock(Row::class);
-        
+
         $dimensionValue = $this->createMock(DimensionValue::class);
         $dimensionValue->method('getValue')->willReturn('US');
         $row->method('getDimensionValues')->willReturn([$dimensionValue]);
@@ -183,4 +183,3 @@ class DataTransformerTest extends TestCase
         return $response;
     }
 }
-

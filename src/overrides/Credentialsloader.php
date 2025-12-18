@@ -2,7 +2,6 @@
 
 namespace zfhassaan\genlytics\overrides;
 
-
 use Google\Auth\Credentials\ImpersonatedServiceAccountCredentials;
 use Google\Auth\Credentials\InsecureCredentials;
 use Google\Auth\Credentials\ServiceAccountCredentials;
@@ -20,12 +19,12 @@ abstract class Credentialsloader implements
     FetchAuthTokenInterface,
     UpdateMetadataInterface
 {
-    const TOKEN_CREDENTIAL_URI = 'https://oauth2.googleapis.com/token';
-    const ENV_VAR = 'GOOGLE_APPLICATION_CREDENTIALS';
-    const WELL_KNOWN_PATH = 'gcloud/application_default_credentials.json';
-    const NON_WINDOWS_WELL_KNOWN_PATH_BASE = '.config';
-    const MTLS_WELL_KNOWN_PATH = '.secureConnect/context_aware_metadata.json';
-    const MTLS_CERT_ENV_VAR = 'GOOGLE_API_USE_CLIENT_CERTIFICATE';
+    public const TOKEN_CREDENTIAL_URI = 'https://oauth2.googleapis.com/token';
+    public const ENV_VAR = 'GOOGLE_APPLICATION_CREDENTIALS';
+    public const WELL_KNOWN_PATH = 'gcloud/application_default_credentials.json';
+    public const NON_WINDOWS_WELL_KNOWN_PATH_BASE = '.config';
+    public const MTLS_WELL_KNOWN_PATH = '.secureConnect/context_aware_metadata.json';
+    public const MTLS_CERT_ENV_VAR = 'GOOGLE_API_USE_CLIENT_CERTIFICATE';
 
     /**
      * @param string $cause

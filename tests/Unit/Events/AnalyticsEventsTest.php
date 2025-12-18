@@ -51,4 +51,3 @@ class AnalyticsEventsTest extends TestCase
         $this->assertSame($exception, $event->exception);
     }
 }
-

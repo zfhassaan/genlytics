@@ -49,4 +49,3 @@ interface AnalyticsRepositoryInterface
      */
     public function getPropertyId(): string;
 }
-

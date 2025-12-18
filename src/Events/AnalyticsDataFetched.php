@@ -10,7 +10,8 @@ use Illuminate\Queue\SerializesModels;
  */
 class AnalyticsDataFetched
 {
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
+    use SerializesModels;
 
     /**
      * @param string $reportType Type of report (report, realtime, dimension)
@@ -26,4 +27,3 @@ class AnalyticsDataFetched
     ) {
     }
 }
-

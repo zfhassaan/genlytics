@@ -7,8 +7,6 @@ use zfhassaan\genlytics\provider\AnalyticsServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
-
-
     /**
      * Get package providers.
      *
@@ -63,4 +61,3 @@ abstract class TestCase extends Orchestra
         $app['config']->set('analytics.enable_realtime_updates', false);
     }
 }
-

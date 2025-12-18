@@ -30,7 +30,7 @@ class DataTransformer implements DataTransformerInterface
 
         foreach ($rows as $row) {
             $rowData = ['dimensions' => [], 'metrics' => []];
-            
+
             // Extract dimension values
             $dimensionValues = $row->getDimensionValues() ?? [];
             foreach ($dimensionValues as $index => $dimensionValue) {
@@ -73,7 +73,7 @@ class DataTransformer implements DataTransformerInterface
 
         foreach ($rows as $row) {
             $rowData = ['dimensions' => [], 'metrics' => []];
-            
+
             // Extract dimension values
             $dimensionValues = $row->getDimensionValues() ?? [];
             foreach ($dimensionValues as $index => $dimensionValue) {
@@ -117,4 +117,3 @@ class DataTransformer implements DataTransformerInterface
         return $formatted;
     }
 }
-

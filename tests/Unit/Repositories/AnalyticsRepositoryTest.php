@@ -29,12 +29,12 @@ class AnalyticsRepositoryTest extends TestCase
         $metrics = [['name' => 'activeUsers']];
 
         $mockResponse = $this->createMock(RunReportResponse::class);
-        
+
         $this->mockClient
             ->shouldReceive('runReport')
             ->once()
             ->with(Mockery::on(function ($options) {
-                return isset($options['property']) 
+                return isset($options['property'])
                     && isset($options['dateRanges'])
                     && isset($options['dimensions'])
                     && isset($options['metrics']);
@@ -52,12 +52,12 @@ class AnalyticsRepositoryTest extends TestCase
         $metrics = [['name' => 'activeUsers']];
 
         $mockResponse = $this->createMock(RunRealtimeReportResponse::class);
-        
+
         $this->mockClient
             ->shouldReceive('runRealtimeReport')
             ->once()
             ->with(Mockery::on(function ($options) {
-                return isset($options['property']) 
+                return isset($options['property'])
                     && isset($options['dimensions'])
                     && isset($options['metrics']);
             }))
@@ -74,12 +74,12 @@ class AnalyticsRepositoryTest extends TestCase
         $dimension = 'country';
 
         $mockResponse = $this->createMock(RunReportResponse::class);
-        
+
         $this->mockClient
             ->shouldReceive('runReport')
             ->once()
             ->with(Mockery::on(function ($options) {
-                return isset($options['property']) 
+                return isset($options['property'])
                     && isset($options['dateRanges'])
                     && isset($options['dimensions']);
             }))
@@ -102,14 +102,14 @@ class AnalyticsRepositoryTest extends TestCase
             ->andThrow(new ApiException('API Error', 400));
 
         $this->expectException(ApiException::class);
-        
+
         $this->repository->runReport($dateRange, $dimensions, $metrics);
     }
 
     public function test_can_get_property_id()
     {
         $propertyId = $this->repository->getPropertyId();
-        
+
         $this->assertEquals('properties/123456789', $propertyId);
     }
 
@@ -123,7 +123,7 @@ class AnalyticsRepositoryTest extends TestCase
         $metrics = [['name' => 'activeUsers']];
 
         $mockResponse = $this->createMock(RunReportResponse::class);
-        
+
         $this->mockClient
             ->shouldReceive('runReport')
             ->once()
@@ -140,4 +140,3 @@ class AnalyticsRepositoryTest extends TestCase
         parent::tearDown();
     }
 }
-

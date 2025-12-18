@@ -65,4 +65,3 @@ interface CacheManagerInterface
      */
     public function getLifetime(): int;
 }
-

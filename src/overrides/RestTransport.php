@@ -100,7 +100,7 @@ class RestTransport implements TransportInterface
             function (ResponseInterface $response) use ($call, $options) {
                 $decodeType = $call->getDecodeType();
                 /** @var Message $return */
-                $return = new $decodeType;
+                $return = new $decodeType();
                 $body = (string) $response->getBody();
 
                 // In some rare cases LRO response metadata may not be loaded
@@ -168,7 +168,7 @@ class RestTransport implements TransportInterface
         $request = $this->requestBuilder->build(
             $call->getMethod(),
             $call->getMessage()
-        // Exclude headers here because they will be added in _serverStreamRequest().
+            // Exclude headers here because they will be added in _serverStreamRequest().
         );
 
         $decoderOptions = [];

@@ -55,4 +55,3 @@ class RefreshAnalyticsCache extends Command
         return Command::SUCCESS;
     }
 }
-

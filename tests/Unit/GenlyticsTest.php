@@ -25,7 +25,7 @@ class GenlyticsTest extends TestCase
         $period = ['start_date' => '7daysAgo', 'end_date' => 'today'];
         $dimension = [['name' => 'country']];
         $metrics = [['name' => 'activeUsers']];
-        
+
         $mockResponse = $this->createMock(JsonResponse::class);
 
         $this->mockService
@@ -43,7 +43,7 @@ class GenlyticsTest extends TestCase
     {
         $dimension = [['name' => 'country']];
         $metrics = [['name' => 'activeUsers']];
-        
+
         $mockResponse = $this->createMock(JsonResponse::class);
 
         $this->mockService
@@ -61,7 +61,7 @@ class GenlyticsTest extends TestCase
     {
         $period = ['start_date' => '7daysAgo', 'end_date' => 'today'];
         $dimension = 'country';
-        
+
         $mockResponse = $this->createMock(JsonResponse::class);
 
         $this->mockService
@@ -80,7 +80,7 @@ class GenlyticsTest extends TestCase
         $period = ['start_date' => '7daysAgo', 'end_date' => 'today'];
         $dimension = ['name' => 'country']; // Single dimension
         $metrics = [['name' => 'activeUsers']];
-        
+
         $mockResponse = $this->createMock(JsonResponse::class);
 
         $this->mockService
@@ -90,14 +90,14 @@ class GenlyticsTest extends TestCase
             ->andReturn($mockResponse);
 
         $result = $this->genlytics->runReports($period, $dimension, $metrics);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $result);
     }
 
     public function test_can_get_service()
     {
         $service = $this->genlytics->getService();
-        
+
         $this->assertInstanceOf(AnalyticsService::class, $service);
         $this->assertSame($this->mockService, $service);
     }
@@ -108,4 +108,3 @@ class GenlyticsTest extends TestCase
         parent::tearDown();
     }
 }
-

@@ -9,8 +9,8 @@ use Google\ApiCore\Version;
  */
 class AgentHeader
 {
-    const AGENT_HEADER_KEY = 'x-goog-api-client';
-    const UNKNOWN_VERSION = '';
+    public const AGENT_HEADER_KEY = 'x-goog-api-client';
+    public const UNKNOWN_VERSION = '';
 
     /**
      * @param array $headerInfo {
@@ -114,10 +114,10 @@ class AgentHeader
     {
         $callingClassFile = (new \ReflectionClass($callingClass))->getFileName();
         $versionFile = substr(
-                $callingClassFile,
-                0,
-                strrpos($callingClassFile, DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR)
-            ) . DIRECTORY_SEPARATOR . 'VERSION';
+            $callingClassFile,
+            0,
+            strrpos($callingClassFile, DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR)
+        ) . DIRECTORY_SEPARATOR . 'VERSION';
 
         return Version::readVersionFile($versionFile);
     }

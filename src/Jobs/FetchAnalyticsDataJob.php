@@ -21,7 +21,10 @@ use zfhassaan\genlytics\Events\AnalyticsQueryFailed;
  */
 class FetchAnalyticsDataJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The number of times the job may be attempted.
@@ -84,7 +87,7 @@ class FetchAnalyticsDataJob implements ShouldQueue
                 $this->reportType,
                 $this->parameters
             );
-            
+
             $cacheManager->put($cacheKey, $transformedData);
 
             // Fire events
@@ -150,4 +153,3 @@ class FetchAnalyticsDataJob implements ShouldQueue
         );
     }
 }
-
