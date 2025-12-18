@@ -7,13 +7,7 @@ use zfhassaan\genlytics\provider\AnalyticsServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
-    /**
-     * Setup the test environment.
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
+
 
     /**
      * Get package providers.
