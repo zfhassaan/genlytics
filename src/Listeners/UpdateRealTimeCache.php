@@ -10,11 +10,16 @@ use zfhassaan\genlytics\Jobs\FetchAnalyticsDataJob;
 
 /**
  * Listener for cache updates
- * Automatically refreshes real-time data
+ * Schedules real-time data refreshes
  */
 class UpdateRealTimeCache implements ShouldQueue
 {
     use InteractsWithQueue;
+
+    public function __construct(
+        protected ?CacheManagerInterface $cacheManager = null
+    ) {
+    }
 
     /**
      * Handle the event
@@ -24,11 +29,11 @@ class UpdateRealTimeCache implements ShouldQueue
      */
     public function handle(AnalyticsCacheUpdated $event): void
     {
-        // For real-time reports, schedule next update
         if ($event->reportType === 'realtime') {
-            // Schedule next real-time update in 30 seconds
-            FetchAnalyticsDataJob::dispatch($event->reportType, [], $event->cacheKey)
-                ->delay(now()->addSeconds(30));
+            $interval = (int) config('analytics.realtime_cache_lifetime', 30);
+
+            FetchAnalyticsDataJob::dispatch($event->reportType, $event->parameters, $event->cacheKey)
+                ->delay(now()->addSeconds($interval));
         }
     }
 }

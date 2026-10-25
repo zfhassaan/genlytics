@@ -113,6 +113,107 @@ class FetchAnalyticsDataJobTest extends TestCase
         Event::assertDispatched(AnalyticsQueryFailed::class);
     }
 
+    public function test_job_handles_dimension_reports()
+    {
+        $job = new FetchAnalyticsDataJob('dimension', [
+            'dateRange' => ['start_date' => '30daysAgo', 'end_date' => 'today'],
+            'dimension' => 'city',
+            'options' => ['limit' => 5],
+        ], 'cache:dimension:city');
+
+        $mockResponse = $this->createMock(\Google\Analytics\Data\V1beta\RunReportResponse::class);
+        $transformedData = [['dimensions' => ['city' => 'Paris'], 'metrics' => ['activeUsers' => '200']]];
+
+        $this->mockRepository
+            ->shouldReceive('runDimensionReport')
+            ->once()
+            ->with(['start_date' => '30daysAgo', 'end_date' => 'today'], 'city', ['limit' => 5])
+            ->andReturn($mockResponse);
+
+        $this->mockTransformer
+            ->shouldReceive('transformReport')
+            ->once()
+            ->with($mockResponse)
+            ->andReturn($transformedData);
+
+        $this->mockCacheManager
+            ->shouldReceive('put')
+            ->once()
+            ->with('cache:dimension:city', $transformedData)
+            ->andReturn(true);
+
+        $job->handle($this->mockRepository, $this->mockCacheManager, $this->mockTransformer);
+
+        Event::assertDispatched(AnalyticsCacheUpdated::class);
+        Event::assertDispatched(AnalyticsDataFetched::class);
+    }
+
+    public function test_job_handles_batch_reports()
+    {
+        $job = new FetchAnalyticsDataJob('batch', [
+            'reports' => [
+                ['dimensions' => ['country'], 'metrics' => ['activeUsers']],
+            ],
+        ], 'cache:batch:1');
+
+        $mockResponse = $this->createMock(\Google\Analytics\Data\V1beta\BatchRunReportsResponse::class);
+        $transformedData = [[['country' => 'US']]];
+
+        $this->mockRepository
+            ->shouldReceive('batchRunReports')
+            ->once()
+            ->andReturn($mockResponse);
+
+        $this->mockTransformer
+            ->shouldReceive('transformBatchReport')
+            ->once()
+            ->with($mockResponse)
+            ->andReturn($transformedData);
+
+        $this->mockCacheManager
+            ->shouldReceive('put')
+            ->once()
+            ->with('cache:batch:1', $transformedData)
+            ->andReturn(true);
+
+        $job->handle($this->mockRepository, $this->mockCacheManager, $this->mockTransformer);
+
+        Event::assertDispatched(AnalyticsCacheUpdated::class);
+    }
+
+    public function test_job_throws_exception_on_unknown_report_type()
+    {
+        $job = new FetchAnalyticsDataJob('invalid_type', [], 'cache:invalid');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown report type: invalid_type');
+
+        $job->handle($this->mockRepository, $this->mockCacheManager, $this->mockTransformer);
+    }
+
+    public function test_job_unique_id_fallback_to_md5()
+    {
+        $jobWithKey = new FetchAnalyticsDataJob('report', ['date' => 'today'], 'custom_key');
+        $this->assertEquals('custom_key', $jobWithKey->uniqueId());
+
+        $jobWithoutKey = new FetchAnalyticsDataJob('report', ['date' => 'today'], null);
+        $this->assertNotEmpty($jobWithoutKey->uniqueId());
+        $this->assertEquals(32, strlen($jobWithoutKey->uniqueId()));
+    }
+
+    public function test_job_constructor_configures_connection_and_queue()
+    {
+        config(['analytics.queue.connection' => 'redis']);
+        config(['analytics.queue.name' => 'analytics-queue']);
+        config(['analytics.queue.unique_for' => 300]);
+
+        $job = new FetchAnalyticsDataJob('report', []);
+
+        $this->assertEquals('redis', $job->connection);
+        $this->assertEquals('analytics-queue', $job->queue);
+        $this->assertEquals(300, $job->uniqueFor);
+    }
+
     protected function tearDown(): void
     {
         Mockery::close();

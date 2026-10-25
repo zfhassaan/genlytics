@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <p align="center">
-    <img align="center" class="img-fluid" src="banner.jpeg"/>
+    <img align="center" width="540" alt="Genlytics" src="logo.png"/>
 </p>
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/zfhassaan/genlytics.svg?style=flat-square)](https://packagist.org/packages/zfhassaan/genlytics)
@@ -8,7 +8,6 @@
 [![Tests](https://github.com/zfhassaan/genlytics/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/zfhassaan/genlytics/actions/workflows/tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/zfhassaan/genlytics.svg?style=flat-square)](https://packagist.org/packages/zfhassaan/genlytics)
 ![Laravel 10–12](https://img.shields.io/badge/Laravel-10.x%20%7C%2011.x%20%7C%2012.x-FF2D20?style=flat-square&logo=laravel&logoColor=white)
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fzfhassaan%2Fgenlytics&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 ### Disclaimer 
 The Google UA Property is going away from July 2023. Google is implementing the Google Analytics V4. 
@@ -31,7 +30,7 @@ Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel, completely
 - **Real-Time Updates** - Automatic refresh scheduling for live dashboards
 - **Type Safety** - Full type hints and comprehensive PHPDoc
 - **Error Handling** - Robust error handling with logging
-- **Comprehensive Tests** - 52 test cases with 83+ assertions
+- **Comprehensive Tests** - 160 test cases with 484 assertions (90.4% code coverage, 100% pass rate)
 - **Backward Compatible** - Existing code works without changes
 
 ### Architecture Highlights
@@ -368,25 +367,39 @@ This publishes:
 
 See [PUBLISHING.md](tests/PUBLISHING.md) for details.
 
-## Testing
+## Testing & Code Coverage
 
-Run the test suite:
-
-```bash
-composer test
-```
-
-Or with coverage:
+Run the comprehensive test suite (160 tests, 484 assertions across 19 test suites with 90.4% code coverage):
 
 ```bash
-composer test-coverage
+# Run all tests
+php packages/zfhassaan/genlytics/test-runner.php
+# or with composer:
+composer test:genlytics
+
+# Run with testdox output
+php packages/zfhassaan/genlytics/test-runner.php --testdox
+
+# Run specific suite or test
+php packages/zfhassaan/genlytics/test-runner.php --filter QuotaManagerTest
+
+# Run code coverage report in terminal
+php -d xdebug.mode=coverage packages/zfhassaan/genlytics/test-runner.php --coverage-text
+# or:
+composer test:genlytics:coverage
+
+# Generate HTML code coverage report
+php -d xdebug.mode=coverage packages/zfhassaan/genlytics/test-runner.php --coverage-html coverage
+# or:
+composer test:genlytics:coverage-html
 ```
 
-**Test Coverage:**
-- 52 test cases
-- 83+ assertions
-- All major components tested
-- Mocks for external dependencies (no real API calls needed)
+**Test Coverage Highlights:**
+- **160 automated tests** with **484 assertions** (`100% pass rate`, 0 failures, 0 errors)
+- **90.43% line code coverage** (1,692 / 1,871 lines covered)
+- Full isolation & mocks for external Google Analytics Data API calls
+- 100% coverage on Commands, Events, Realtime listeners, DTOs, Exceptions, and API Resources
+- Full test coverage for PST timezone midnight calculations, concurrency locks, and quota modes (`consume_all`, `maximum_utilization`)
 
 ## Cache Management
 

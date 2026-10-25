@@ -2,6 +2,7 @@
 
 namespace zfhassaan\genlytics\Services;
 
+use Google\Analytics\Data\V1beta\BatchRunReportsResponse;
 use Google\Analytics\Data\V1beta\RunReportResponse;
 use Google\Analytics\Data\V1beta\RunRealtimeReportResponse;
 use zfhassaan\genlytics\Contracts\DataTransformerInterface;
@@ -101,6 +102,25 @@ class DataTransformer implements DataTransformerInterface
     /**
      * {@inheritDoc}
      */
+    public function transformBatchReport(BatchRunReportsResponse $response): array
+    {
+        $result = [];
+        $reports = $response->getReports();
+
+        if (empty($reports)) {
+            return $result;
+        }
+
+        foreach ($reports as $index => $report) {
+            $result[$index] = $this->transformReport($report);
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function toJsonFormat(array $data, bool $includeMetadata = false): array
     {
         $formatted = [
@@ -108,7 +128,9 @@ class DataTransformer implements DataTransformerInterface
         ];
 
         if ($includeMetadata) {
+            $formatted['version'] = \zfhassaan\genlytics\Genlytics::VERSION;
             $formatted['metadata'] = [
+                'version' => \zfhassaan\genlytics\Genlytics::VERSION,
                 'count' => count($data),
                 'timestamp' => now()->toIso8601String(),
             ];

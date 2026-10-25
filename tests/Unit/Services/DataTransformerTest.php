@@ -2,6 +2,7 @@
 
 namespace zfhassaan\genlytics\Tests\Unit\Services;
 
+use Google\Analytics\Data\V1beta\BatchRunReportsResponse;
 use Google\Analytics\Data\V1beta\DimensionHeader;
 use Google\Analytics\Data\V1beta\DimensionValue;
 use Google\Analytics\Data\V1beta\MetricHeader;
@@ -46,6 +47,19 @@ class DataTransformerTest extends TestCase
         $this->assertArrayHasKey('metrics', $result[0]);
     }
 
+    public function test_can_transform_batch_report_response()
+    {
+        $report1 = $this->createMockReportResponse();
+        $batchResponse = $this->createMock(BatchRunReportsResponse::class);
+        $batchResponse->method('getReports')->willReturn([$report1]);
+
+        $result = $this->transformer->transformBatchReport($batchResponse);
+
+        $this->assertIsArray($result);
+        $this->assertCount(1, $result);
+        $this->assertNotEmpty($result[0]);
+    }
+
     public function test_handles_empty_report_response()
     {
         $response = $this->createMock(RunReportResponse::class);
@@ -71,6 +85,16 @@ class DataTransformerTest extends TestCase
         $this->assertArrayHasKey('metadata', $result);
         $this->assertEquals(1, $result['metadata']['count']);
         $this->assertArrayHasKey('timestamp', $result['metadata']);
+        $this->assertEquals(\zfhassaan\genlytics\Genlytics::VERSION, $result['version']);
+    }
+
+    public function test_transform_batch_report_handles_empty_reports()
+    {
+        $batchResponse = $this->createMock(BatchRunReportsResponse::class);
+        $batchResponse->method('getReports')->willReturn([]);
+
+        $result = $this->transformer->transformBatchReport($batchResponse);
+        $this->assertEquals([], $result);
     }
 
     public function test_to_json_format_without_metadata()
@@ -119,12 +143,10 @@ class DataTransformerTest extends TestCase
             $row->method('getDimensionValues')->willReturn($dimensionValues);
 
             $metricValues = [];
-            if (isset($metrics[$index])) {
-                foreach ($metrics[$index] as $key => $value) {
-                    $metValue = $this->createMock(MetricValue::class);
-                    $metValue->method('getValue')->willReturn($value);
-                    $metricValues[] = $metValue;
-                }
+            foreach ($metrics[$index] as $key => $value) {
+                $metValue = $this->createMock(MetricValue::class);
+                $metValue->method('getValue')->willReturn($value);
+                $metricValues[] = $metValue;
             }
             $row->method('getMetricValues')->willReturn($metricValues);
 
@@ -133,7 +155,7 @@ class DataTransformerTest extends TestCase
 
         $dimensionHeaders = [];
         if (!empty($dimensions[0])) {
-            foreach (array_keys($dimensions[0]) as $index => $name) {
+            foreach (array_keys($dimensions[0]) as $name) {
                 $header = $this->createMock(DimensionHeader::class);
                 $header->method('getName')->willReturn($name);
                 $dimensionHeaders[] = $header;
@@ -142,7 +164,7 @@ class DataTransformerTest extends TestCase
 
         $metricHeaders = [];
         if (!empty($metrics[0])) {
-            foreach (array_keys($metrics[0]) as $index => $name) {
+            foreach (array_keys($metrics[0]) as $name) {
                 $header = $this->createMock(MetricHeader::class);
                 $header->method('getName')->willReturn($name);
                 $metricHeaders[] = $header;

@@ -3,10 +3,12 @@
 namespace zfhassaan\genlytics\Tests\Unit\Events;
 
 use Exception;
+use zfhassaan\genlytics\DTOs\QuotaStatusDTO;
 use zfhassaan\genlytics\Events\AnalyticsCacheUpdated;
 use zfhassaan\genlytics\Events\AnalyticsDataFetched;
 use zfhassaan\genlytics\Events\AnalyticsDataRequested;
 use zfhassaan\genlytics\Events\AnalyticsQueryFailed;
+use zfhassaan\genlytics\Events\QuotaUsageUpdated;
 use zfhassaan\genlytics\Tests\TestCase;
 
 class AnalyticsEventsTest extends TestCase
@@ -49,5 +51,28 @@ class AnalyticsEventsTest extends TestCase
         $this->assertEquals('report', $event->reportType);
         $this->assertEquals(['params'], $event->parameters);
         $this->assertSame($exception, $event->exception);
+    }
+
+    public function test_quota_usage_updated_event()
+    {
+        $status = new QuotaStatusDTO([
+            'property_type' => '360',
+            'mode' => 'consume_all',
+            'daily_tokens_limit' => 2000000,
+            'daily_tokens_consumed' => 500000,
+        ]);
+
+        $event = new QuotaUsageUpdated($status, 25);
+        $this->assertSame($status, $event->status);
+        $this->assertEquals(25, $event->tokensConsumed);
+        $this->assertEquals('genlytics-quota', $event->channel);
+        $this->assertEquals('quota.updated', $event->broadcastAs());
+
+        $payload = $event->broadcastWith();
+        $this->assertEquals('360', $payload['property_type']);
+        $this->assertEquals('consume_all', $payload['mode']);
+        $this->assertEquals(2000000, $payload['daily_tokens_limit']);
+        $this->assertEquals(25, $payload['tokens_consumed_this_event']);
+        $this->assertTrue($payload['consume_all_active']);
     }
 }

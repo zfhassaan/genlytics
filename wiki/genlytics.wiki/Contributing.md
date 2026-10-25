@@ -151,10 +151,10 @@ class GenlyticsTest extends TestCase
     {
         // Arrange
         $analytics = new Genlytics();
-        
+
         // Act
         $result = $analytics->runReports(...);
-        
+
         // Assert
         $this->assertNotNull($result);
     }
@@ -203,6 +203,7 @@ public function runReports(...): JsonResponse
 ### Wiki Documentation
 
 When adding features, update relevant wiki pages:
+
 - [[Usage-Guide|Usage Guide]]
 - [[Configuration-Guide|Configuration Guide]]
 - [[Troubleshooting|Troubleshooting]]
@@ -235,28 +236,32 @@ test: add repository tests
 
 ### Before Submitting
 
-1. ✅ Code follows standards
-2. ✅ Tests pass
-3. ✅ Documentation updated
-4. ✅ No linter errors
-5. ✅ Backward compatibility maintained (if applicable)
+1.  Code follows standards
+2.  Tests pass
+3.  Documentation updated
+4.  No linter errors
+5.  Backward compatibility maintained (if applicable)
 
 ### PR Description Template
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 How was this tested?
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Tests added/updated
 - [ ] Documentation updated
@@ -278,9 +283,9 @@ How was this tested?
 ## Recognition
 
 Contributors will be:
+
 - Listed in CONTRIBUTORS.md
 - Mentioned in release notes
 - Credited in the project
 
 Thank you for contributing to Genlytics! 🎉
-

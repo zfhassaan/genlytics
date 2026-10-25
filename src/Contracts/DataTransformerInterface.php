@@ -2,6 +2,7 @@
 
 namespace zfhassaan\genlytics\Contracts;
 
+use Google\Analytics\Data\V1beta\BatchRunReportsResponse;
 use Google\Analytics\Data\V1beta\RunReportResponse;
 use Google\Analytics\Data\V1beta\RunRealtimeReportResponse;
 
@@ -26,6 +27,14 @@ interface DataTransformerInterface
      * @return array Transformed data
      */
     public function transformRealtimeReport(RunRealtimeReportResponse $response): array;
+
+    /**
+     * Transform batch report response to array of transformed reports
+     *
+     * @param BatchRunReportsResponse $response
+     * @return array Array of transformed report datasets
+     */
+    public function transformBatchReport(BatchRunReportsResponse $response): array;
 
     /**
      * Transform to JSON response format

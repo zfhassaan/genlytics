@@ -15,16 +15,12 @@ class RefreshAnalyticsCacheTest extends TestCase
     {
         parent::setUp();
         $this->mockCacheManager = Mockery::mock(CacheManagerInterface::class);
+        $this->mockCacheManager->shouldReceive('clear')->byDefault()->andReturn(true);
         $this->app->instance(CacheManagerInterface::class, $this->mockCacheManager);
     }
 
     public function test_can_clear_cache()
     {
-        $this->mockCacheManager
-            ->shouldReceive('clear')
-            ->once()
-            ->andReturn(true);
-
         $this->artisan('genlytics:refresh-cache', ['--clear' => true])
             ->expectsOutput('Analytics cache cleared successfully.')
             ->assertExitCode(0);
@@ -45,6 +41,18 @@ class RefreshAnalyticsCacheTest extends TestCase
         ])
             ->expectsOutput('Refreshing report cache...')
             ->expectsOutput('Refreshing realtime cache...')
+            ->assertExitCode(0);
+    }
+
+    public function test_can_refresh_cache_with_consume_all_flag()
+    {
+        $mockQuota = Mockery::mock(\zfhassaan\genlytics\Contracts\QuotaManagerInterface::class);
+        $mockQuota->shouldReceive('enableAllQuotaConsumption')->once()->andReturnSelf();
+        $mockQuota->shouldReceive('getRemainingDailyTokens')->once()->andReturn(180000);
+        $this->app->instance(\zfhassaan\genlytics\Contracts\QuotaManagerInterface::class, $mockQuota);
+
+        $this->artisan('genlytics:refresh-cache', ['--consume-all' => true])
+            ->expectsOutput('🚀 Activating Full Daily Quota Consumption Mode...')
             ->assertExitCode(0);
     }
 

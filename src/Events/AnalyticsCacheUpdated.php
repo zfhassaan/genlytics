@@ -17,11 +17,13 @@ class AnalyticsCacheUpdated
      * @param string $cacheKey Cache key that was updated
      * @param string $reportType Type of report
      * @param array $data Cached data
+     * @param array $parameters Original query parameters
      */
     public function __construct(
         public readonly string $cacheKey,
         public readonly string $reportType,
-        public readonly array $data
+        public readonly array $data,
+        public readonly array $parameters = []
     ) {
     }
 }

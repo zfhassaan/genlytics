@@ -2,6 +2,7 @@
 
 namespace zfhassaan\genlytics\Contracts;
 
+use Google\Analytics\Data\V1beta\BatchRunReportsResponse;
 use Google\Analytics\Data\V1beta\RunReportResponse;
 use Google\Analytics\Data\V1beta\RunRealtimeReportResponse;
 
@@ -41,6 +42,14 @@ interface AnalyticsRepositoryInterface
      * @return RunReportResponse
      */
     public function runDimensionReport(array $dateRange, $dimension, array $options = []): RunReportResponse;
+
+    /**
+     * Run multiple reports in a single batch API call
+     *
+     * @param array $reports Array of report definitions (each containing dateRange, dimensions, metrics, options)
+     * @return BatchRunReportsResponse
+     */
+    public function batchRunReports(array $reports): BatchRunReportsResponse;
 
     /**
      * Get property ID

@@ -1,0 +1,18 @@
+{
+  "name": "genlytics-docs",
+  "version": "1.1.0",
+  "description": "Genlytics Vue.js Documentation & Showcase Website",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "npx serve ../docs"
+  },
+  "keywords": [
+    "vue",
+    "laravel",
+    "google-analytics-4",
+    "ga4",
+    "docs"
+  ],
+  "author": "Hassaan Ali <zfhassaan@gmail.com>",
+  "license": "MIT"
+}

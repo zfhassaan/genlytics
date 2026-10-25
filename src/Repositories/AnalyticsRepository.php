@@ -2,14 +2,17 @@
 
 namespace zfhassaan\genlytics\Repositories;
 
+use Google\Analytics\Data\V1beta\BatchRunReportsResponse;
 use Google\Analytics\Data\V1beta\DateRange;
 use Google\Analytics\Data\V1beta\Dimension;
 use Google\Analytics\Data\V1beta\Metric;
+use Google\Analytics\Data\V1beta\RunReportRequest;
 use Google\Analytics\Data\V1beta\RunReportResponse;
 use Google\Analytics\Data\V1beta\RunRealtimeReportResponse;
 use Google\ApiCore\ApiException;
 use Illuminate\Support\Facades\Log;
 use zfhassaan\genlytics\Contracts\AnalyticsRepositoryInterface;
+use zfhassaan\genlytics\Contracts\QuotaManagerInterface;
 use zfhassaan\genlytics\overrides\BetaAnalyticsDataClient;
 
 /**
@@ -20,15 +23,31 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
 {
     protected string $propertyId;
     protected BetaAnalyticsDataClient $client;
+    protected ?QuotaManagerInterface $quotaManager = null;
 
     /**
      * @param BetaAnalyticsDataClient $client
      * @param string $propertyId
+     * @param QuotaManagerInterface|null $quotaManager
      */
-    public function __construct(BetaAnalyticsDataClient $client, string $propertyId)
-    {
+    public function __construct(
+        BetaAnalyticsDataClient $client,
+        string $propertyId,
+        ?QuotaManagerInterface $quotaManager = null
+    ) {
         $this->client = $client;
         $this->propertyId = $propertyId;
+        $this->quotaManager = $quotaManager;
+    }
+
+    public function getQuotaManager(): ?QuotaManagerInterface
+    {
+        return $this->quotaManager;
+    }
+
+    public function setQuotaManager(QuotaManagerInterface $quotaManager): void
+    {
+        $this->quotaManager = $quotaManager;
     }
 
     /**
@@ -36,6 +55,11 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
      */
     public function runReport(array $dateRange, array $dimensions, array $metrics, array $options = []): RunReportResponse
     {
+        $slotAcquired = false;
+        if ($this->quotaManager !== null) {
+            $slotAcquired = $this->quotaManager->acquireConcurrencySlot();
+        }
+
         try {
             $dimensionObjects = $this->buildDimensions($dimensions);
             $metricObjects = $this->buildMetrics($metrics);
@@ -48,7 +72,17 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
                 'metrics' => $metricObjects,
             ], $options);
 
-            return $this->client->runReport($requestOptions);
+            $response = $this->client->runReport($requestOptions);
+
+            if ($this->quotaManager !== null) {
+                if (method_exists($response, 'getPropertyQuota') && $response->getPropertyQuota() !== null) {
+                    $this->quotaManager->syncFromPropertyQuota($response->getPropertyQuota());
+                } else {
+                    $this->quotaManager->recordUsage(1);
+                }
+            }
+
+            return $response;
         } catch (ApiException $e) {
             Log::error('Analytics API Error', [
                 'method' => 'runReport',
@@ -56,6 +90,10 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
                 'code' => $e->getCode(),
             ]);
             throw $e;
+        } finally {
+            if ($slotAcquired && $this->quotaManager !== null) {
+                $this->quotaManager->releaseConcurrencySlot();
+            }
         }
     }
 
@@ -64,6 +102,11 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
      */
     public function runRealtimeReport(array $dimensions, array $metrics, array $options = []): RunRealtimeReportResponse
     {
+        $slotAcquired = false;
+        if ($this->quotaManager !== null) {
+            $slotAcquired = $this->quotaManager->acquireConcurrencySlot();
+        }
+
         try {
             $dimensionObjects = $this->buildDimensions($dimensions);
             $metricObjects = $this->buildMetrics($metrics);
@@ -74,7 +117,17 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
                 'metrics' => $metricObjects,
             ], $options);
 
-            return $this->client->runRealtimeReport($requestOptions);
+            $response = $this->client->runRealtimeReport($requestOptions);
+
+            if ($this->quotaManager !== null) {
+                if (method_exists($response, 'getPropertyQuota') && $response->getPropertyQuota() !== null) {
+                    $this->quotaManager->syncFromPropertyQuota($response->getPropertyQuota());
+                } else {
+                    $this->quotaManager->recordUsage(1);
+                }
+            }
+
+            return $response;
         } catch (ApiException $e) {
             Log::error('Analytics Realtime API Error', [
                 'method' => 'runRealtimeReport',
@@ -82,6 +135,10 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
                 'code' => $e->getCode(),
             ]);
             throw $e;
+        } finally {
+            if ($slotAcquired && $this->quotaManager !== null) {
+                $this->quotaManager->releaseConcurrencySlot();
+            }
         }
     }
 
@@ -111,6 +168,61 @@ class AnalyticsRepository implements AnalyticsRepositoryInterface
                 'code' => $e->getCode(),
             ]);
             throw $e;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function batchRunReports(array $reports): BatchRunReportsResponse
+    {
+        $slotAcquired = false;
+        if ($this->quotaManager !== null) {
+            $slotAcquired = $this->quotaManager->acquireConcurrencySlot();
+        }
+
+        try {
+            $requests = [];
+            foreach ($reports as $report) {
+                $dimensionObjects = isset($report['dimensions']) ? $this->buildDimensions($report['dimensions']) : [];
+                $metricObjects = isset($report['metrics']) ? $this->buildMetrics($report['metrics']) : [];
+                $dateRangeObjects = isset($report['dateRange']) ? $this->buildDateRanges($report['dateRange']) : [];
+
+                $reqData = [
+                    'property' => $this->propertyId,
+                    'date_ranges' => $dateRangeObjects,
+                    'dimensions' => $dimensionObjects,
+                    'metrics' => $metricObjects,
+                ];
+
+                if (!empty($report['options'])) {
+                    $reqData = array_merge($reqData, $report['options']);
+                }
+
+                $requests[] = new RunReportRequest($reqData);
+            }
+
+            $response = $this->client->batchRunReports([
+                'property' => $this->propertyId,
+                'requests' => $requests,
+            ]);
+
+            if ($this->quotaManager !== null) {
+                $this->quotaManager->recordUsage(count($requests));
+            }
+
+            return $response;
+        } catch (ApiException $e) {
+            Log::error('Analytics Batch API Error', [
+                'method' => 'batchRunReports',
+                'error' => $e->getMessage(),
+                'code' => $e->getCode(),
+            ]);
+            throw $e;
+        } finally {
+            if ($slotAcquired && $this->quotaManager !== null) {
+                $this->quotaManager->releaseConcurrencySlot();
+            }
         }
     }
 

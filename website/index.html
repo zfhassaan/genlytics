@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Genlytics - Enterprise Google Analytics 4 (GA4) Package for Laravel with Repository Pattern, Fluent Queries, and SWR Caching" />
+  <meta name="keywords" content="Laravel, GA4, Google Analytics 4, PHP, Composer, Analytics, Reporting, Fluent Query, Repository Pattern, Cache" />
+  <meta name="author" content="Hassaan Ali" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Genlytics - Google Analytics 4 for Laravel" />
+  <meta property="og:description" content="Enterprise GA4 package for Laravel built with Eloquent-style Fluent Queries, Repository Pattern, and zero-stampede SWR caching." />
+  <meta property="og:image" content="logo.png" />
+
+  <title>Genlytics - Enterprise Google Analytics 4 for Laravel</title>
+  <link rel="icon" type="image/png" href="logo-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="logo-icon.svg" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Prism.js Themes -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind CSS CDN with Dark Mode Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              400: '#38bdf8',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app" v-cloak>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand" @click="navigateTo('home')">
+          <img :src="isDarkMode ? 'logo-icon.png' : 'logo-icon-light.png'" alt="Genlytics Logo" class="nav-brand-logo" />
+          <span class="nav-brand-name">Genlytics</span>
+        </div>
+
+        <ul class="nav-links">
+          <li><span class="nav-link" :class="{ active: currentPage === 'home' }" @click="navigateTo('home')">Home</span></li>
+          <li><span class="nav-link" :class="{ active: isDocPage(currentPage) }" @click="navigateTo(lastDocPage || 'getting-started')">Documentation</span></li>
+          <li><span class="nav-link" :class="{ active: currentPage === 'getting-started' }" @click="navigateTo('getting-started')">Quickstart</span></li>
+          <li><span class="nav-link" :class="{ active: currentPage === 'api-reference' }" @click="navigateTo('api-reference')">API Reference</span></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-search-btn" @click="openSearchModal()" title="Search documentation (Press / or Ctrl+K)" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span class="nav-search-label">Search docs...</span>
+            <kbd class="nav-search-kbd">Ctrl K</kbd>
+          </button>
+
+          <button class="theme-toggle-btn" @click="toggleTheme" :title="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'" aria-label="Toggle theme">
+            <!-- Lucide Sun Icon (Active in Dark Mode) -->
+            <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2"/>
+              <path d="M12 20v2"/>
+              <path d="m4.93 4.93 1.41 1.41"/>
+              <path d="m17.66 17.66 1.41 1.41"/>
+              <path d="M2 12h2"/>
+              <path d="M20 12h2"/>
+              <path d="m6.34 17.66-1.41 1.41"/>
+              <path d="m19.07 4.93-1.41 1.41"/>
+            </svg>
+            <!-- Lucide Moon Icon (Active in Light Mode) -->
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+            </svg>
+          </button>
+
+          <a href="https://github.com/zfhassaan/genlytics" target="_blank" rel="noopener noreferrer" class="github-btn" title="GitHub Repository">
+            <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+            </svg>
+            <span class="github-btn-text">GitHub</span>
+          </a>
+
+          <!-- Mobile Hamburger Menu Button -->
+          <button 
+            type="button" 
+            class="mobile-menu-btn" 
+            @click="toggleMobileMenu" 
+            :aria-label="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+            :title="isMobileMenuOpen ? 'Close menu' : 'Open menu'"
+          >
+            <svg v-if="!isMobileMenuOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Drawer Dropdown -->
+      <transition
+        enter-active-class="transition duration-200 ease-out"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition duration-150 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
+      >
+        <div v-if="isMobileMenuOpen" class="mobile-nav-drawer" @click.stop>
+          <div class="mobile-nav-inner">
+            <ul class="mobile-nav-list">
+              <li>
+                <button 
+                  type="button" 
+                  class="mobile-nav-item" 
+                  :class="{ active: currentPage === 'home' }" 
+                  @click="navigateTo('home')"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <span>Home</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  type="button" 
+                  class="mobile-nav-item" 
+                  :class="{ active: isDocPage(currentPage) }" 
+                  @click="navigateTo(lastDocPage || 'getting-started')"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span>Documentation</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  type="button" 
+                  class="mobile-nav-item" 
+                  :class="{ active: currentPage === 'getting-started' }" 
+                  @click="navigateTo('getting-started')"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span>Quickstart</span>
+                </button>
+              </li>
+              <li>
+                <button 
+                  type="button" 
+                  class="mobile-nav-item" 
+                  :class="{ active: currentPage === 'api-reference' }" 
+                  @click="navigateTo('api-reference')"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                  <span>API Reference</span>
+                </button>
+              </li>
+            </ul>
+
+            <!-- If currently in docs view, shortcut to open documentation chapters -->
+            <div v-if="isDocPage(currentPage)" class="mobile-nav-docs-trigger">
+              <button 
+                type="button" 
+                class="mobile-docs-open-btn" 
+                @click="toggleMobileDocsDrawer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+                <span>Browse Chapters ({{ getCurrentDocTitle }})</span>
+              </button>
+            </div>
+
+            <div class="mobile-nav-footer">
+              <a href="https://github.com/zfhassaan/genlytics" target="_blank" rel="noopener noreferrer" class="mobile-nav-github">
+                <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+                <span>GitHub Repository &bull; MIT License</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+      <!-- =================================================================== -->
+      <!-- HOME PAGE (7 DEDICATED SECTIONS) -->
+      <!-- =================================================================== -->
+      <div v-if="currentPage === 'home'">
+        
+        <!-- SECTION 1: HERO -->
+        <section class="hero">
+          <div class="hero-badge">
+            <i data-lucide="sparkles" class="hero-badge-icon"></i>
+            <span>Version 1.1.0 Released</span>
+            <span class="hero-badge-dot">•</span>
+            <span>Eloquent Fluent Builder</span>
+            <span class="hero-badge-dot">•</span>
+            <span>Batch GA4 API</span>
+          </div>
+
+          <h1 class="hero-title">
+            Enterprise <span class="hero-title-gradient">Google Analytics 4</span><br />
+            Reimagined for Laravel
+          </h1>
+
+          <p class="hero-subtitle">
+            Query GA4 metrics with Eloquent-style fluent chaining, dedicated helper functions, and zero-stampede Stale-While-Revalidate caching. Developer-friendly and engineered for massive scale.
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn-primary" @click="navigateTo('fluent-queries')">
+              <span>Explore Fluent Queries</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+            <button class="btn-secondary" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;" @click="navigateTo('getting-started')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open" style="margin-right: 0.65rem; flex-shrink: 0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              <span>Quickstart Guide</span>
+            </button>
+          </div>
+
+          <div class="install-box">
+            <i data-lucide="terminal" class="terminal-icon"></i>
+            <span>composer require zfhassaan/genlytics</span>
+            <button class="copy-btn" @click="copyText('composer require zfhassaan/genlytics')">
+              <svg v-if="copiedText === 'composer require zfhassaan/genlytics'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+              <span>{{ copiedText === 'composer require zfhassaan/genlytics' ? 'Copied' : 'Copy' }}</span>
+            </button>
+          </div>
+
+          <!-- Hero Logo Showcase (Replaced Banner) -->
+          <div class="hero-logo-showcase">
+            <div class="hero-logo-glow"></div>
+            <div class="hero-logo-card">
+              <img :src="isDarkMode ? 'logo.png' : 'logo-light.png'" alt="Genlytics Enterprise Logo" class="hero-logo-main" />
+            </div>
+
+            <!-- Hero Feature Pills -->
+            <div class="hero-feature-pills">
+              <span class="hero-pill"><i data-lucide="shield-check" style="width: 14px; height: 14px; color: var(--brand-primary);"></i> Enterprise Architecture</span>
+              <span class="hero-pill"><i data-lucide="zap" style="width: 14px; height: 14px; color: #06b6d4;"></i> Sub-15ms SWR Latency</span>
+              <span class="hero-pill"><i data-lucide="database" style="width: 14px; height: 14px; color: #a855f7;"></i> Repository Pattern</span>
+              <span class="hero-pill"><i data-lucide="layers" style="width: 14px; height: 14px; color: #3b82f6;"></i> Batch Multi-Reporting</span>
+              <span class="hero-pill"><i data-lucide="clock" style="width: 14px; height: 14px; color: #22c55e;"></i> Configurable Cache TTL</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 2: LIVE REAL-TIME DASHBOARD SIMULATOR -->
+        <section class="simulator-section">
+          <div class="section-header">
+            <h2>Live Real-Time Simulator</h2>
+            <p>Experience how Genlytics powers live dashboards with automated caching and sub-15ms queries.</p>
+          </div>
+
+          <div class="simulator-container">
+            <div class="sim-header">
+              <div class="live-beacon">
+                <span class="radar-dot"></span>
+                <i data-lucide="radio" style="width: 14px; height: 14px; margin-right: 4px;"></i>
+                <span>LIVE TELEMETRY (GA4 REALTIME)</span>
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;">
+                <i data-lucide="refresh-cw" style="width: 13px; height: 13px;"></i>
+                <span>Data refreshed via <code>Genlytics::realtimeActiveUsers()</code></span>
+              </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-title">Active Users Now</div>
+                <div class="stat-value" style="color: #22c55e;">{{ liveStats.activeUsers }}</div>
+                <div class="stat-change" style="color: #22c55e; display: flex; align-items: center; gap: 0.3rem;">
+                  <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i>
+                  <span>+14% vs last hour</span>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-title">Today's Sessions</div>
+                <div class="stat-value">{{ liveStats.sessions.toLocaleString() }}</div>
+                <div class="stat-change" style="display: flex; align-items: center; gap: 0.3rem;">
+                  <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i>
+                  <span>+8.2% vs yesterday</span>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-title">Today's Page Views</div>
+                <div class="stat-value">{{ liveStats.views.toLocaleString() }}</div>
+                <div class="stat-change" style="display: flex; align-items: center; gap: 0.3rem;">
+                  <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i>
+                  <span>+21.4% trend</span>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-title">Cache Latency</div>
+                <div class="stat-value" style="color: var(--brand-primary);">12ms</div>
+                <div class="stat-change" style="color: var(--brand-primary); display: flex; align-items: center; gap: 0.3rem;">
+                  <i data-lucide="zap" style="width: 14px; height: 14px;"></i>
+                  <span>Redis Tagged Hit</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tables & Geographic Bars Grid -->
+            <div class="sim-tables-grid">
+              <!-- Active Pages Table -->
+              <div class="sim-card-inner">
+                <div class="sim-card-title">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="file-text" style="width: 16px; height: 16px; color: var(--brand-primary);"></i>
+                    <span>Top Active Pages</span>
+                  </div>
+                  <code style="font-size: 0.75rem;">Genlytics::realtimeTopPages()</code>
+                </div>
+                <table class="sim-table">
+                  <thead>
+                    <tr>
+                      <th>Page URL</th>
+                      <th style="text-align: right;">Active Readers</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="page in livePages" :key="page.path">
+                      <td><code>{{ page.path }}</code></td>
+                      <td style="text-align: right; font-weight: 700; color: #22c55e;">{{ page.readers }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Top Countries Chart -->
+              <div class="sim-card-inner">
+                <div class="sim-card-title">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="globe" style="width: 16px; height: 16px; color: var(--brand-primary);"></i>
+                    <span>Geographic Distribution</span>
+                  </div>
+                  <code style="font-size: 0.75rem;">Genlytics::topCountries()</code>
+                </div>
+                <div v-for="geo in liveCountries" :key="geo.country" style="margin-bottom: 0.85rem;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 600;">
+                    <span>{{ geo.country }}</span>
+                    <span>{{ geo.users }} users</span>
+                  </div>
+                  <div class="bar-fill-container">
+                    <div class="bar-fill" :style="{ width: geo.pct + '%' }"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: E-COMMERCE FUNNEL & PRODUCT PIPELINE -->
+        <section class="funnel-section">
+          <div class="section-header">
+            <h2>E-Commerce Funnel & Product Intelligence</h2>
+            <p>Analyze end-to-end customer purchase funnels, drop-off rates, top revenue-generating products, and categories with zero boilerplate.</p>
+          </div>
+
+          <!-- Interactive Funnel Pipeline Showcase Card -->
+          <div class="funnel-container">
+            <div class="funnel-header">
+              <div class="funnel-header-left">
+                <div class="funnel-badge">
+                  <i data-lucide="git-merge" style="width: 15px; height: 15px;"></i>
+                  <span>GA4 DEFAULT PURCHASE PIPELINE</span>
+                </div>
+                <h3 style="font-size: 1.35rem; font-weight: 700; margin-top: 0.5rem;">{{ liveFunnel.name }}</h3>
+              </div>
+              <div class="funnel-header-right">
+                <div class="conversion-callout">
+                  <span class="conv-label">Overall Funnel Conversion</span>
+                  <span class="conv-value">{{ liveFunnel.overallConversionRate }}%</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem;">
+                  Executed via <code>Genlytics::ecommerceFunnel()</code>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pipeline Visual Steps -->
+            <div class="funnel-pipeline-grid">
+              <div 
+                v-for="(step, idx) in liveFunnel.steps" 
+                :key="step.step" 
+                class="funnel-step-card"
+              >
+                <div class="step-card-top">
+                  <span class="step-num-pill">Step {{ step.step }}</span>
+                  <code class="step-event-name">{{ step.eventName }}</code>
+                </div>
+
+                <div class="step-title-row">
+                  <h4 class="step-title">{{ step.name.split('. ')[1] || step.name }}</h4>
+                  <span class="step-users-count">{{ step.count.toLocaleString() }} <small>users</small></span>
+                </div>
+
+                <!-- Funnel Volume Meter Bar -->
+                <div class="funnel-meter-wrapper">
+                  <div 
+                    class="funnel-meter-fill" 
+                    :style="{ width: step.overallConversionRate + '%' }"
+                  ></div>
+                </div>
+
+                <!-- Step Metrics & Drop-offs -->
+                <div class="step-metrics-footer">
+                  <div class="step-stat">
+                    <span class="step-stat-label">Conversion</span>
+                    <span class="step-stat-val text-success">{{ step.conversionRate }}%</span>
+                  </div>
+                  <div class="step-stat" v-if="step.dropOffCount > 0">
+                    <span class="step-stat-label">Drop-off</span>
+                    <span class="step-stat-val text-danger">-{{ step.dropOffRate }}%</span>
+                  </div>
+                  <div class="step-stat">
+                    <span class="step-stat-label">Funnel Retained</span>
+                    <span class="step-stat-val text-primary">{{ step.overallConversionRate }}%</span>
+                  </div>
+                </div>
+
+                <!-- Step Connector Arrow (unless last) -->
+                <div v-if="idx < liveFunnel.steps.length - 1" class="step-connector">
+                  <i data-lucide="arrow-right" class="connector-arrow"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- E-Commerce Details Split Grid: Top Products & Top Categories -->
+            <div class="ecommerce-split-grid">
+              <!-- Top Performing Products -->
+              <div class="ecom-card">
+                <div class="ecom-card-title">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="shopping-bag" style="width: 17px; height: 17px; color: var(--brand-primary);"></i>
+                    <span>Top Performing Products</span>
+                  </div>
+                  <code>Genlytics::topProducts(limit: 4)</code>
+                </div>
+                
+                <div class="table-responsive">
+                  <table class="sim-table">
+                    <thead>
+                      <tr>
+                        <th>Product / SKU</th>
+                        <th>Category</th>
+                        <th style="text-align: right;">Revenue</th>
+                        <th style="text-align: right;">Sold</th>
+                        <th style="text-align: right;">Cart Rate</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="prod in topProductsList" :key="prod.id">
+                        <td>
+                          <strong>{{ prod.name }}</strong>
+                          <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">{{ prod.id }}</div>
+                        </td>
+                        <td><span class="badge-subtle">{{ prod.category }}</span></td>
+                        <td style="text-align: right; font-weight: 700; color: #22c55e;">${{ prod.revenue.toLocaleString() }}</td>
+                        <td style="text-align: right;">{{ prod.itemsPurchased }}</td>
+                        <td style="text-align: right; font-weight: 600; color: var(--brand-primary);">{{ prod.cartToViewRate }}%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Top Product Categories -->
+              <div class="ecom-card">
+                <div class="ecom-card-title">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="layers" style="width: 17px; height: 17px; color: var(--brand-primary);"></i>
+                    <span>Top Product Categories</span>
+                  </div>
+                  <code>Genlytics::topCategories(limit: 4)</code>
+                </div>
+
+                <div v-for="cat in topCategoriesList" :key="cat.category" style="margin-bottom: 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; font-size: 0.9rem;">
+                    <span style="font-weight: 600;">{{ cat.category }}</span>
+                    <div>
+                      <span style="font-weight: 700; color: #22c55e; margin-right: 0.5rem;">${{ cat.revenue.toLocaleString() }}</span>
+                      <small style="color: var(--text-muted);">({{ cat.units }} units)</small>
+                    </div>
+                  </div>
+                  <div class="bar-fill-container">
+                    <div class="bar-fill" :style="{ width: cat.pct + '%' }"></div>
+                  </div>
+                </div>
+
+                <div class="ecom-card-cta">
+                  <button class="btn-secondary" style="width: 100%; justify-content: center; display: inline-flex; align-items: center; gap: 0.65rem;" @click="navigateTo('ecommerce-and-funnels')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open" style="margin-right: 0.35rem;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    <span>View Funnel & E-Commerce Docs</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: ELOQUENT-STYLE FLUENT STUDIO (POWERED BY TAILWIND CSS) -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative">
+          <!-- Section Header -->
+          <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wider uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-3 shadow-sm">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+              <span>INTERACTIVE BUILDER STUDIO</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">
+              Eloquent-Style Query Studio
+            </h2>
+            <p class="text-slate-600 dark:text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+              Write expressive Google Analytics 4 queries with fluent method chaining. Switch tabs to preview different querying styles in real-time.
+            </p>
+          </div>
+
+          <!-- Studio Tabs Navigation -->
+          <div class="flex flex-wrap items-center justify-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-fit mx-auto mb-10 shadow-inner">
+            <button 
+              type="button"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer"
+              :class="studioTab === 'fluent' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md ring-1 ring-slate-200 dark:ring-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50'"
+              @click="switchStudioTab('fluent')"
+            >
+              <i data-lucide="terminal" class="w-4 h-4"></i>
+              <span>1. Fluent Query Builder</span>
+            </button>
+            <button 
+              type="button"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer"
+              :class="studioTab === 'helpers' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md ring-1 ring-slate-200 dark:ring-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50'"
+              @click="switchStudioTab('helpers')"
+            >
+              <i data-lucide="layers" class="w-4 h-4"></i>
+              <span>2. Dedicated Helpers</span>
+            </button>
+            <button 
+              type="button"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer"
+              :class="studioTab === 'batch' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-md ring-1 ring-slate-200 dark:ring-slate-700' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800/50'"
+              @click="switchStudioTab('batch')"
+            >
+              <i data-lucide="cpu" class="w-4 h-4"></i>
+              <span>3. Batch API (Multi-widget)</span>
+            </button>
+          </div>
+
+          <!-- Studio Main Card Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch rounded-3xl p-6 sm:p-8 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+            <!-- Ambient Glow -->
+            <div class="absolute -top-32 -left-32 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Left Column: Controls (lg:col-span-6) -->
+            <div class="lg:col-span-6 flex flex-col justify-between z-10 space-y-6">
+              
+              <!-- TAB 1: FLUENT QUERY BUILDER CONTROLS -->
+              <div v-if="studioTab === 'fluent'" class="space-y-6">
+                <!-- Time Horizon -->
+                <div>
+                  <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-blue-500"></i>
+                    <span>Time Horizon (Predefined Periods)</span>
+                  </label>
+                  <select 
+                    v-model="fluentBuilder.period"
+                    class="w-full rounded-xl px-4 py-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none shadow-sm transition"
+                  >
+                    <option value="last7Days">last7Days()</option>
+                    <option value="last30Days">last30Days()</option>
+                    <option value="yesterday">yesterday()</option>
+                    <option value="today">today()</option>
+                  </select>
+                </div>
+
+                <!-- Dimensions Chips -->
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <i data-lucide="tag" class="w-3.5 h-3.5 text-blue-500"></i>
+                      <span>Dimensions (Click to Toggle)</span>
+                    </label>
+                    <span class="text-xs text-slate-400 font-mono">{{ fluentBuilder.dimensions.length }} selected</span>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      v-for="dim in availableDimensions" 
+                      :key="dim"
+                      @click="toggleFluentDim(dim)"
+                      class="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5"
+                      :class="fluentBuilder.dimensions.includes(dim) 
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-2 ring-blue-500 scale-[1.02]' 
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-slate-700/50'"
+                    >
+                      <i v-if="fluentBuilder.dimensions.includes(dim)" data-lucide="check" class="w-3 h-3 text-white"></i>
+                      <span>{{ dim }}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Metrics Chips -->
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-blue-500"></i>
+                      <span>Metrics (Click to Toggle)</span>
+                    </label>
+                    <span class="text-xs text-slate-400 font-mono">{{ fluentBuilder.metrics.length }} selected</span>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    <button 
+                      type="button"
+                      v-for="met in availableMetrics" 
+                      :key="met"
+                      @click="toggleFluentMet(met)"
+                      class="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold transition cursor-pointer flex items-center gap-1.5"
+                      :class="fluentBuilder.metrics.includes(met) 
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/25 ring-2 ring-emerald-500 scale-[1.02]' 
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-emerald-400 dark:hover:border-emerald-500 hover:bg-emerald-50/50 dark:hover:bg-slate-700/50'"
+                    >
+                      <i v-if="fluentBuilder.metrics.includes(met)" data-lucide="check" class="w-3 h-3 text-white"></i>
+                      <span>{{ met }}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Result Limit -->
+                <div>
+                  <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
+                    <i data-lucide="hash" class="w-3.5 h-3.5 text-blue-500"></i>
+                    <span>Result Limit</span>
+                  </label>
+                  <div class="flex items-center gap-3">
+                    <input 
+                      type="number" 
+                      v-model.number="fluentBuilder.limit" 
+                      min="1" 
+                      max="100"
+                      class="w-28 rounded-xl px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono font-bold text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none shadow-sm"
+                    />
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Rows returned in Collection</span>
+                  </div>
+                </div>
+
+                <!-- Configurable Cache Expiry (TTL) -->
+                <div>
+                  <div class="flex items-center justify-between mb-2.5">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <i data-lucide="clock" class="w-3.5 h-3.5 text-blue-500"></i>
+                      <span>Configurable Cache Expiry (TTL)</span>
+                    </label>
+                    <span class="text-[0.7rem] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-bold uppercase tracking-wide">Configurable</span>
+                  </div>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button
+                      type="button"
+                      @click="fluentBuilder.cacheTtl = 'default'"
+                      class="px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer text-center"
+                      :class="fluentBuilder.cacheTtl === 'default'
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-2 ring-blue-500'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-blue-400'"
+                    >
+                      Default Config
+                    </button>
+                    <button
+                      type="button"
+                      @click="fluentBuilder.cacheTtl = 'remember_7200'"
+                      class="px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer text-center"
+                      :class="fluentBuilder.cacheTtl === 'remember_7200'
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-2 ring-blue-500'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-blue-400'"
+                    >
+                      2h (remember)
+                    </button>
+                    <button
+                      type="button"
+                      @click="fluentBuilder.cacheTtl = 'cacheFor_interval'"
+                      class="px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer text-center"
+                      :class="fluentBuilder.cacheTtl === 'cacheFor_interval'
+                        ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 ring-2 ring-blue-500'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-blue-400'"
+                    >
+                      DateInterval
+                    </button>
+                    <button
+                      type="button"
+                      @click="fluentBuilder.cacheTtl = 'dontCache'"
+                      class="px-3 py-2 rounded-xl text-xs font-semibold transition cursor-pointer text-center"
+                      :class="fluentBuilder.cacheTtl === 'dontCache'
+                        ? 'bg-amber-600 text-white shadow-md shadow-amber-500/25 ring-2 ring-amber-500'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 hover:border-amber-400'"
+                    >
+                      dontCache()
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 2: DEDICATED HELPERS -->
+              <div v-else-if="studioTab === 'helpers'" class="space-y-4">
+                <p class="text-sm text-slate-600 dark:text-slate-400">
+                  Select any pre-built helper function to see its instant production-ready implementation:
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
+                  <button 
+                    type="button"
+                    v-for="helper in helperOptions" 
+                    :key="helper.name"
+                    @click="selectedHelper = helper.name"
+                    class="p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between"
+                    :class="selectedHelper === helper.name 
+                      ? 'border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-blue-500' 
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/80'"
+                  >
+                    <div class="flex items-center justify-between font-mono font-bold text-xs mb-1">
+                      <span>{{ helper.name }}()</span>
+                      <i v-if="selectedHelper === helper.name" data-lucide="check-circle-2" class="w-3.5 h-3.5 text-blue-500"></i>
+                    </div>
+                    <span class="text-[0.78rem] text-slate-500 dark:text-slate-400 line-clamp-2">{{ helper.desc }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- TAB 3: BATCH API -->
+              <div v-else class="space-y-5">
+                <div class="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-900 dark:text-blue-300 text-xs sm:text-sm leading-relaxed">
+                  <strong class="font-bold flex items-center gap-1.5 mb-1">
+                    <i data-lucide="zap" class="w-4 h-4 text-blue-500"></i>
+                    Multi-Widget Batch Execution
+                  </strong>
+                  GA4 batch API bundles multiple disparate reports (geo, pages, sources, technology) into a <strong>single Google Cloud HTTP payload</strong>, slashing server latency by over 76%.
+                </div>
+
+                <div>
+                  <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
+                    <i data-lucide="layers" class="w-3.5 h-3.5 text-blue-500"></i>
+                    <span>Batch Reporting Preset</span>
+                  </label>
+                  <select 
+                    v-model="batchPreset"
+                    class="w-full rounded-xl px-4 py-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none shadow-sm transition"
+                  >
+                    <option value="full_dashboard">Executive Dashboard (Sources, Pages & Geo)</option>
+                    <option value="user_tech">User & Technology Breakdown (Devices & Browsers)</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Code Output Terminal (lg:col-span-6) -->
+            <div class="lg:col-span-6 flex flex-col z-10">
+              <div class="rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl flex flex-col h-full">
+                <!-- Terminal Header Bar -->
+                <div class="px-4 py-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
+                  <!-- Mac Window Controls -->
+                  <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+                    <span class="ml-2 text-xs font-mono text-slate-400 font-semibold flex items-center gap-1.5">
+                      <i data-lucide="file-code" class="w-3.5 h-3.5 text-blue-400"></i>
+                      <span>app/Services/Analytics.php</span>
+                    </span>
+                  </div>
+
+                  <!-- Copy Code Button -->
+                  <button 
+                    type="button"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95" 
+                    @click="copyText(studioGeneratedCode)"
+                    :title="copiedText === studioGeneratedCode ? 'Code copied!' : 'Copy to clipboard'"
+                  >
+                    <svg v-if="copiedText === studioGeneratedCode" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check text-emerald-400"><polyline points="20 6 9 17 4 12"/></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy text-slate-400"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    <span>{{ copiedText === studioGeneratedCode ? 'Copied!' : 'Copy Code' }}</span>
+                  </button>
+                </div>
+
+                <!-- Code Snippet Body -->
+                <div class="p-5 sm:p-6 font-mono text-xs sm:text-sm text-sky-200/90 leading-relaxed overflow-x-auto whitespace-pre flex-1 bg-slate-950/95 selection:bg-blue-600 selection:text-white">
+                  <code>{{ studioGeneratedCode }}</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 4: DEDICATED PRE-BUILT QUERIES SHOWCASE -->
+        <section class="queries-showcase">
+          <div class="section-header">
+            <h2>Dedicated One-Liner Query Methods</h2>
+            <p>Never write manual dimensions or metrics again for standard dashboard cards.</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="query-card" v-for="q in dedicatedQueries" :key="q.name">
+              <div class="query-card-header">
+                <div class="query-card-icon-box">
+                  <i :data-lucide="q.icon"></i>
+                </div>
+                <div>
+                  <h3 style="font-size: 1.15rem; font-weight: 700;">{{ q.title }}</h3>
+                  <span class="query-card-badge">{{ q.name }}()</span>
+                </div>
+              </div>
+              <p style="color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1.25rem;">
+                {{ q.description }}
+              </p>
+              <div class="query-card-code">
+                <code>{{ q.code }}</code>
+                <button class="copy-btn" @click="copyText(q.code)" :title="copiedText === q.code ? 'Copied' : 'Copy code'">
+                  <svg v-if="copiedText === q.code" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><polyline points="20 6 9 17 4 12"/></svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 5: ARCHITECTURE & SOLID PRINCIPLES -->
+        <section class="architecture-section">
+          <div class="section-header">
+            <h2>Enterprise SOLID Architecture</h2>
+            <p>Decoupled, extensible components designed for testability and zero downtime.</p>
+          </div>
+
+          <div class="grid-3">
+            <div class="feature-card">
+              <div class="feature-icon"><i data-lucide="layers"></i></div>
+              <h3>Repository Pattern</h3>
+              <p><code>AnalyticsRepositoryInterface</code> cleanly encapsulates the Google API Protobuf client. Mocking data in test suites requires zero GCP network calls.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+              <h3>Distributed Atomic Locks</h3>
+              <p>Stale-While-Revalidate with atomic locks guarantees that only 1 worker refreshes an expired cache entry, preventing quota stampedes.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon"><i data-lucide="cpu"></i></div>
+              <h3>Queue Stampede Prevention</h3>
+              <p><code>FetchAnalyticsDataJob</code> implements <code>ShouldBeUnique</code>. Identical queries are debounced across your Redis or database queue.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon"><i data-lucide="tag"></i></div>
+              <h3>Redis Cache Tagging</h3>
+              <p>Automated cache tagging enables instant atomic invalidation via <code>php artisan genlytics:refresh-cache --clear</code> without flushing unrelated app cache.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon"><i data-lucide="activity"></i></div>
+              <h3>Event-Driven Observability</h3>
+              <p>Every query fires lifecycle events (<code>Requested</code>, <code>Fetched</code>, <code>Failed</code>) to feed custom metrics, logs, or WebSockets.</p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon"><i data-lucide="sparkles"></i></div>
+              <h3>Dual Return Engines</h3>
+              <p>Query as <code>Collection</code> for data transformation pipelines or <code>JsonResponse</code> for instant API responses.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION 6: GA4 QUOTA LIMITS & MAXIMUM RESOURCE UTILIZATION ENGINE -->
+        <section class="benchmarks-section">
+          <div class="section-header">
+            <h2>GA4 Quota Limits & Maximum Resource Utilization</h2>
+            <p>Engineered for the Google Analytics Data API limits: 200,000 core tokens/day, 40,000/hr, and 10 concurrent requests with midnight PST auto-reset.</p>
+            <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.75rem; flex-wrap: wrap;">
+              <span style="font-size: 0.75rem; padding: 0.25rem 0.75rem; background: rgba(34, 197, 94, 0.15); color: #22c55e; border-radius: 9999px; font-weight: 700; border: 1px solid rgba(34, 197, 94, 0.3);">
+                ✓ 160 Automated Tests (484 Assertions) • 90.4% Code Coverage
+              </span>
+              <span style="font-size: 0.75rem; padding: 0.25rem 0.75rem; background: rgba(6, 182, 212, 0.15); color: #06b6d4; border-radius: 9999px; font-weight: 700; border: 1px solid rgba(6, 182, 212, 0.3);">
+                ⚡ Real-Time Broadcasting via WebSockets & SSE
+              </span>
+              <span style="font-size: 0.75rem; padding: 0.25rem 0.75rem; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 9999px; font-weight: 700; border: 1px solid rgba(239, 68, 68, 0.3);">
+                🔥 100% Daily Quota Drain & Pre-Warm Engine
+              </span>
+            </div>
+          </div>
+
+          <!-- Property Type Selector, Quota Mode Switcher & Live Simulator Trigger -->
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+              <!-- Property Type Toggle -->
+              <div style="display: inline-flex; background: var(--bg-card); padding: 0.25rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                <button 
+                  class="btn-secondary" 
+                  style="padding: 0.4rem 1rem; font-size: 0.85rem; border: none;"
+                  :style="quotaPropertyType === 'standard' ? 'background: var(--brand-primary); color: white;' : ''"
+                  @click="quotaPropertyType = 'standard'"
+                >
+                  Standard (200k / day)
+                </button>
+                <button 
+                  class="btn-secondary" 
+                  style="padding: 0.4rem 1rem; font-size: 0.85rem; border: none;"
+                  :style="quotaPropertyType === '360' ? 'background: var(--brand-primary); color: white;' : ''"
+                  @click="quotaPropertyType = '360'"
+                >
+                  Analytics 360 (2M / day)
+                </button>
+              </div>
+
+              <!-- Operational Mode Toggle: Balanced vs Maximum Utilization vs Consume All -->
+              <div style="display: inline-flex; background: var(--bg-card); padding: 0.25rem; border-radius: 12px; border: 1px solid var(--border-color); flex-wrap: wrap;">
+                <button 
+                  class="btn-secondary" 
+                  style="padding: 0.4rem 0.85rem; font-size: 0.85rem; border: none;"
+                  :style="quotaMode === 'balanced' ? 'background: var(--brand-primary); color: white;' : ''"
+                  @click="quotaMode = 'balanced'"
+                >
+                  Balanced (85%)
+                </button>
+                <button 
+                  class="btn-secondary" 
+                  style="padding: 0.4rem 0.85rem; font-size: 0.85rem; border: none;"
+                  :style="quotaMode === 'maximum_utilization' ? 'background: linear-gradient(135deg, #06b6d4, #3b82f6); color: white; font-weight: 700;' : ''"
+                  @click="quotaMode = 'maximum_utilization'"
+                >
+                  ⚡ Maximum Quota (100% Burst)
+                </button>
+                <button 
+                  class="btn-secondary" 
+                  style="padding: 0.4rem 0.85rem; font-size: 0.85rem; border: none;"
+                  :style="quotaMode === 'consume_all' ? 'background: linear-gradient(135deg, #ef4444, #f97316); color: white; font-weight: 700;' : ''"
+                  @click="quotaMode = 'consume_all'"
+                >
+                  🔥 Consume All (100% Drain)
+                </button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn-primary" style="padding: 0.5rem 0.85rem; font-size: 0.85rem;" @click="simulateQuotaExecution(false)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Simulate Query</span>
+              </button>
+              <button class="btn-secondary" style="padding: 0.5rem 0.85rem; font-size: 0.85rem; border-color: rgba(6,182,212,0.4);" @click="simulateQuotaExecution(true)">
+                <span>⚡ Burst</span>
+              </button>
+              <button class="btn-primary" style="padding: 0.5rem 0.85rem; font-size: 0.85rem; background: linear-gradient(135deg, #ef4444, #f97316);" @click="simulateDrainDailyQuota" :disabled="drainInProgress">
+                <span v-if="!drainInProgress">🔥 Drain Daily Quota</span>
+                <span v-else>🔥 Draining (Pre-warming)...</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Real-Time Telemetry & WebSocket Broadcast Stream Bar -->
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <span style="position: relative; display: flex; height: 10px; width: 10px;">
+                <span style="animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; position: absolute; display: inline-flex; height: 100%; width: 100%; border-radius: 9999px; background: #22c55e; opacity: 0.75;"></span>
+                <span style="position: relative; display: inline-flex; border-radius: 9999px; height: 10px; width: 10px; background: #22c55e;"></span>
+              </span>
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-heading); letter-spacing: 0.02em;">
+                LIVE REALTIME BROADCASTING
+              </span>
+              <span style="font-size: 0.75rem; padding: 0.15rem 0.5rem; background: rgba(59, 130, 246, 0.15); color: #3b82f6; border-radius: 4px; font-family: monospace;">
+                Channel: genlytics-quota
+              </span>
+              <span style="font-size: 0.75rem; padding: 0.15rem 0.5rem; background: rgba(34, 197, 94, 0.15); color: #22c55e; border-radius: 4px; font-family: monospace;">
+                Event: quota.updated
+              </span>
+            </div>
+
+            <!-- Live Event Stream Feed -->
+            <div style="display: flex; gap: 0.5rem; align-items: center; overflow: hidden;">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Latest Updates:</span>
+              <div style="display: flex; gap: 0.5rem;">
+                <span 
+                  v-for="item in realTimeTelemetry.slice(0, 2)" 
+                  :key="item.id" 
+                  style="font-size: 0.75rem; padding: 0.2rem 0.6rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #38bdf8;"
+                >
+                  ⚡ +{{ item.tokens }} tokens ({{ item.time }})
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 Core Quota Metric Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+            <!-- Card 1: Core Daily Tokens -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; position: relative;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Core Tokens / Day</span>
+                <span style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(59, 130, 246, 0.15); color: #3b82f6; border-radius: 6px; font-weight: 600;">Midnight PST</span>
+              </div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-heading); margin-bottom: 0.25rem;">
+                {{ quotaDailyRemaining.toLocaleString() }}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+                tokens remaining of {{ quotaDailyLimit.toLocaleString() }}
+              </div>
+              <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); transition: width 0.3s;" :style="{ width: quotaDailyPercent + '%' }"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                <span>{{ quotaDailyConsumed.toLocaleString() }} consumed</span>
+                <span>{{ quotaDailyPercent }}% utilized</span>
+              </div>
+            </div>
+
+            <!-- Card 2: Core Hourly Tokens -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Core Tokens / Hour</span>
+                <span 
+                  style="font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 600;"
+                  :style="quotaMode === 'maximum_utilization' ? 'background: rgba(6, 182, 212, 0.2); color: #06b6d4;' : 'background: rgba(34, 197, 94, 0.15); color: #22c55e;'"
+                >
+                  {{ quotaPacingBadge }}
+                </span>
+              </div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-heading); margin-bottom: 0.25rem;">
+                {{ quotaHourlyRemaining.toLocaleString() }}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+                hourly tokens remaining of 40,000
+              </div>
+              <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; background: linear-gradient(90deg, #22c55e, #10b981); transition: width 0.3s;" :style="{ width: quotaHourlyPercent + '%' }"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                <span>{{ quotaHourlyConsumed.toLocaleString() }} consumed</span>
+                <span>Threshold: <strong :style="quotaMode === 'maximum_utilization' ? 'color: #06b6d4;' : 'color: #22c55e;'">{{ quotaWarningThreshold }}%</strong></span>
+              </div>
+            </div>
+
+            <!-- Card 3: Concurrency Semaphore -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Concurrency Guard</span>
+                <span style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(168, 85, 247, 0.15); color: #a855f7; border-radius: 6px; font-weight: 600;">Max 10 In-Flight</span>
+              </div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-heading); margin-bottom: 0.25rem;">
+                {{ quotaConcurrentActive }} <span style="font-size: 1rem; color: var(--text-muted); font-weight: 500;">/ 10 slots</span>
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+                atomic distributed semaphore lock
+              </div>
+              <!-- 10 Slot Indicator Dots -->
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <span 
+                  v-for="n in 10" 
+                  :key="n" 
+                  style="flex: 1; height: 12px; border-radius: 3px; transition: all 0.2s;"
+                  :style="n <= quotaConcurrentActive ? 'background: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);' : 'background: rgba(255,255,255,0.1);'"
+                ></span>
+              </div>
+              <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                Strict Google 10-slot cap (enforced by validation)
+              </div>
+            </div>
+
+            <!-- Card 4: PST Midnight Reset Timer -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Daily Reset Timer</span>
+                <span style="font-size: 0.7rem; padding: 0.2rem 0.5rem; background: rgba(234, 179, 8, 0.15); color: #eab308; border-radius: 6px; font-weight: 600;">Auto-Synced</span>
+              </div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-heading); margin-bottom: 0.25rem; font-family: monospace;">
+                {{ quotaPstCountdown }}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                resets at 12:00:00 AM PST (America/Los_Angeles)
+              </div>
+              <div style="padding: 0.4rem 0.6rem; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.75rem; color: var(--text-muted);">
+                Project Quota: <strong>{{ quotaProjectRequests }} / 50,000 req</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Multi-Tier Limit Specification Pills -->
+          <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: 2.5rem;">
+            <div style="padding: 0.4rem 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 9999px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6;"></span>
+              <span><strong>Project-Level:</strong> 50,000 req / day</span>
+            </div>
+            <div style="padding: 0.4rem 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 9999px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+              <span><strong>IP-Level Quota:</strong> 10 QPS (queries / sec)</span>
+            </div>
+            <div style="padding: 0.4rem 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 9999px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #a855f7;"></span>
+              <span><strong>User-Level Quota:</strong> {{ quotaUserLevelLimit }}</span>
+            </div>
+            <div style="padding: 0.4rem 0.85rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 9999px; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #eab308;"></span>
+              <span><strong>Google Ground-Truth:</strong> Live PropertyQuota Sync</span>
+            </div>
+          </div>
+
+          <!-- Benchmark & Token Preservation Comparison Card -->
+          <div class="benchmark-card">
+            <div class="benchmark-row">
+              <div>
+                <strong>Sequential Raw Google API</strong>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">4 separate HTTP queries = 4 tokens consumed, drains hourly 40k cap</div>
+              </div>
+              <div>
+                <div class="benchmark-meter">
+                  <div class="benchmark-fill-slow"></div>
+                </div>
+              </div>
+              <div style="text-align: right; font-weight: 700; color: #ef4444;">
+                ~1,450ms (4 tokens)
+              </div>
+            </div>
+
+            <div class="benchmark-row">
+              <div>
+                <strong>Genlytics Batching (runBatchReport)</strong>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Packs 4 queries in 1 payload, 76% token saving</div>
+              </div>
+              <div>
+                <div class="benchmark-meter">
+                  <div class="benchmark-fill-fast" style="width: 25%;"></div>
+                </div>
+              </div>
+              <div style="text-align: right; font-weight: 700; color: var(--brand-primary);">
+                ~340ms (1 token)
+              </div>
+            </div>
+
+            <div class="benchmark-row" style="border-bottom: none;">
+              <div>
+                <strong>Genlytics Zero-Stampede SWR Cache</strong>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Atomic distributed lock + SWR background refresh, 100% token preservation</div>
+              </div>
+              <div>
+                <div class="benchmark-meter">
+                  <div class="benchmark-fill-fast" style="width: 5%; background: #22c55e;"></div>
+                </div>
+              </div>
+              <div style="text-align: right; font-weight: 700; color: #22c55e;">
+                ~12ms (0 tokens)
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn-secondary" @click="navigateTo('quota-and-limits')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              <span>Explore GA4 Quota & Adaptive Pacing Documentation</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- SECTION 7: FINAL CTA -->
+        <section class="cta-section">
+          <h2>Supercharge Your Laravel Analytics</h2>
+          <p>Install Genlytics today and enjoy expressive, scalable Google Analytics 4 reporting with zero boilerplate.</p>
+          <div class="cta-buttons">
+            <button class="btn-cta-white" @click="navigateTo('getting-started')">
+              <i data-lucide="rocket"></i>
+              <span>Get Started in 5 Minutes</span>
+            </button>
+            <a href="https://github.com/zfhassaan/genlytics" target="_blank" rel="noopener noreferrer" class="btn-cta-outline">
+              <i data-lucide="star"></i>
+              <span>Star on GitHub</span>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- DEDICATED DOCUMENTATION VIEW -->
+      <!-- =================================================================== -->
+      <div v-else class="docs-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="docs-sidebar">
+          <button 
+            type="button"
+            class="sidebar-search-trigger cursor-pointer select-none group" 
+            @click="openSearchModal()"
+            title="Search documentation (Press / or Ctrl+K)"
+          >
+            <div class="sidebar-search-trigger-inner">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span class="sidebar-search-text">Search docs...</span>
+            </div>
+            <kbd class="sidebar-search-kbd">Ctrl K</kbd>
+          </button>
+
+          <!-- Grouped Documentation Navigation -->
+          <div class="sidebar-nav-groups">
+            <div v-for="section in docNavSections" :key="section.group">
+              <div class="sidebar-group-title">{{ section.group }}</div>
+              <ul class="sidebar-nav">
+                <li 
+                  v-for="item in section.items" 
+                  :key="item.id"
+                  class="sidebar-nav-item" 
+                  :class="{ active: currentPage === item.id }" 
+                  @click="navigateTo(item.id)"
+                >
+                  <i :data-lucide="item.icon" class="nav-item-icon"></i>
+                  <span>{{ item.title }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Markdown Document Renderer -->
+        <article class="docs-content">
+          <!-- Mobile Docs Header & Drawer Trigger (shown on <= 960px) -->
+          <div class="docs-mobile-header">
+            <button 
+              type="button" 
+              class="docs-mobile-trigger-btn" 
+              @click="toggleMobileDocsDrawer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="3" y1="6" y2="6"/><line x1="15" x2="3" y1="12" y2="12"/><line x1="17" x2="3" y1="18" y2="18"/></svg>
+              <span class="docs-mobile-trigger-label">
+                <span class="text-xs uppercase text-slate-400 font-bold tracking-wider mr-1">{{ getCurrentDocGroup }}:</span>
+                <span class="font-semibold">{{ getCurrentDocTitle }}</span>
+              </span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-icon ml-auto"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+
+            <button 
+              type="button" 
+              class="docs-mobile-search-btn" 
+              @click="openSearchModal()" 
+              title="Search documentation"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
+          </div>
+
+          <div class="markdown-body" v-html="renderedMarkdown"></div>
+        </article>
+
+        <!-- Mobile Docs Slide-Over Drawer Sheet -->
+        <transition
+          enter-active-class="transition duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
+          leave-active-class="transition duration-150 ease-in"
+          leave-from-class="opacity-100"
+          leave-to-class="opacity-0"
+        >
+          <div 
+            v-if="isMobileDocsDrawerOpen" 
+            class="mobile-docs-drawer-backdrop" 
+            @click="closeMobileDocsDrawer"
+          >
+            <div class="mobile-docs-drawer-content" @click.stop>
+              <div class="mobile-docs-drawer-header">
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                  <span class="font-bold text-sm">Documentation Chapters</span>
+                </div>
+                <button 
+                  type="button" 
+                  class="mobile-docs-drawer-close" 
+                  @click="closeMobileDocsDrawer"
+                  title="Close navigation"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              </div>
+
+              <!-- Search button inside mobile drawer -->
+              <div class="p-3 border-b border-border">
+                <button 
+                  type="button"
+                  class="sidebar-search-trigger cursor-pointer select-none group w-full mb-0" 
+                  @click="openSearchModal(); closeMobileDocsDrawer();"
+                >
+                  <div class="sidebar-search-trigger-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <span class="sidebar-search-text">Search docs...</span>
+                  </div>
+                  <kbd class="sidebar-search-kbd">Ctrl K</kbd>
+                </button>
+              </div>
+
+              <!-- Grouped Navigation in mobile drawer -->
+              <div class="mobile-docs-drawer-nav">
+                <div v-for="section in docNavSections" :key="section.group" class="mb-4">
+                  <div class="sidebar-group-title">{{ section.group }}</div>
+                  <ul class="sidebar-nav">
+                    <li 
+                      v-for="item in section.items" 
+                      :key="item.id"
+                      class="sidebar-nav-item" 
+                      :class="{ active: currentPage === item.id }" 
+                      @click="navigateTo(item.id); closeMobileDocsDrawer();"
+                    >
+                      <i :data-lucide="item.icon" class="nav-item-icon"></i>
+                      <span>{{ item.title }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="#getting-started" @click.prevent="navigateTo('getting-started')">Quickstart</a>
+        <a href="#fluent-queries" @click.prevent="navigateTo('fluent-queries')">Fluent Queries</a>
+        <a href="#architecture" @click.prevent="navigateTo('architecture')">Architecture</a>
+        <a href="https://github.com/zfhassaan/genlytics" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://packagist.org/packages/zfhassaan/genlytics" target="_blank" rel="noopener noreferrer">Packagist</a>
+      </div>
+      <p>&copy; 2026 Genlytics. Authored by Hassaan Ali. Released under the MIT License.</p>
+    </footer>
+
+    <!-- =================================================================== -->
+    <!-- TAILWIND CSS COMMAND PALETTE SEARCH MODAL -->
+    <!-- =================================================================== -->
+    <transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
+    >
+      <div 
+        v-if="isSearchModalOpen" 
+        class="fixed inset-0 z-[9999] bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm flex items-start justify-center p-3 sm:p-6 md:p-12 overflow-y-auto"
+        @click="closeSearchModal"
+      >
+        <div 
+          class="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col my-auto sm:my-8 transition-all"
+          @click.stop
+        >
+          <!-- Search Header Bar -->
+          <div class="flex items-center gap-3 px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 shrink-0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            
+            <input 
+              ref="modalSearchInputRef"
+              v-model="docsSearch"
+              type="text" 
+              placeholder="Search Genlytics docs, topics, APIs, methods..." 
+              class="w-full bg-transparent border-0 outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-base md:text-lg focus:ring-0"
+              @keydown.down.prevent="navigateSearchResults(1)"
+              @keydown.up.prevent="navigateSearchResults(-1)"
+              @keydown.enter.prevent="selectActiveSearchResult"
+              @keydown.esc.prevent="closeSearchModal"
+            />
+
+            <!-- Clear button -->
+            <button 
+              v-if="docsSearch" 
+              type="button" 
+              @click="docsSearch = ''" 
+              class="p-1 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+              title="Clear search query"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+
+            <!-- Close button -->
+            <button 
+              type="button" 
+              @click="closeSearchModal" 
+              class="hidden sm:inline-flex items-center px-2 py-0.5 text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 bg-slate-200/60 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded shadow-sm hover:bg-slate-300 dark:hover:bg-slate-700 transition"
+              title="Close modal (Esc)"
+            >
+              ESC
+            </button>
+          </div>
+
+          <!-- Popular Search Chips (Tags) -->
+          <div class="px-4 py-2 bg-slate-100/60 dark:bg-slate-800/40 border-b border-slate-200/70 dark:border-slate-800/70 flex flex-wrap items-center gap-1.5 text-xs">
+            <span class="text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap shrink-0 mr-1">Popular:</span>
+            <button 
+              v-for="tag in popularSearchTags" 
+              :key="tag"
+              type="button"
+              @click="setSearchQuery(tag)"
+              class="px-2.5 py-1 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 whitespace-nowrap transition-colors shadow-sm"
+              :class="{ 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 font-semibold': docsSearch.toLowerCase() === tag.toLowerCase() }"
+            >
+              #{{ tag }}
+            </button>
+          </div>
+
+          <!-- Modal Body / Results / Quick Links -->
+          <div class="max-h-[60vh] overflow-y-auto overflow-x-hidden p-4 space-y-3">
+            <!-- 1. EMPTY QUERY: Quick Jump Cards -->
+            <div v-if="!docsSearch.trim()">
+              <div class="flex items-center justify-between mb-3 px-1">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Quick Navigation</span>
+                <span class="text-xs text-slate-400 dark:text-slate-500">Press / anywhere to focus</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div 
+                  v-for="item in quickJumpDocs" 
+                  :key="item.id"
+                  @click="navigateToDoc(item.id)"
+                  class="group flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 hover:bg-blue-50/60 dark:hover:bg-blue-950/30 hover:border-blue-400 dark:hover:border-blue-600 cursor-pointer transition-all shadow-sm"
+                >
+                  <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <i :data-lucide="item.icon" class="w-4 h-4"></i>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center justify-between">
+                      <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">{{ item.title }}</h4>
+                      <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 shrink-0 ml-1">{{ item.group }}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">{{ item.desc }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. NO RESULTS FOUND -->
+            <div v-else-if="searchResults.length === 0" class="py-10 text-center px-4">
+              <div class="w-14 h-14 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/></svg>
+              </div>
+              <h3 class="text-base font-semibold text-slate-800 dark:text-slate-200">No documentation found</h3>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+                No matching topics for "<span class="font-semibold text-slate-700 dark:text-slate-200">{{ docsSearch }}</span>". Try searching for another keyword.
+              </p>
+              <div class="mt-4 flex flex-wrap justify-center gap-2">
+                <button 
+                  v-for="chip in ['quota', 'cache', 'fluent', 'resources', 'test-coverage']"
+                  :key="chip"
+                  type="button" 
+                  @click="setSearchQuery(chip)" 
+                  class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-slate-700 dark:text-slate-300 hover:text-blue-600 transition"
+                >
+                  {{ chip }}
+                </button>
+              </div>
+            </div>
+
+            <!-- 3. SEARCH RESULTS LIST -->
+            <div v-else class="space-y-2">
+              <div class="flex items-center justify-between px-1 mb-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  {{ searchResults.length }} {{ searchResults.length === 1 ? 'Result' : 'Results' }} Found
+                </span>
+                <span class="text-xs text-slate-400 dark:text-slate-500">Navigate with &uarr; &darr; &bull; Enter to select</span>
+              </div>
+
+              <div 
+                v-for="(result, index) in searchResults" 
+                :key="result.id"
+                @mouseenter="selectedSearchIndex = index"
+                @click="selectSearchResult(result)"
+                class="group flex flex-col gap-1.5 p-3.5 rounded-xl border cursor-pointer transition-all"
+                :class="[
+                  index === selectedSearchIndex 
+                    ? 'search-modal-result-active border-blue-500 bg-blue-50/60 dark:bg-blue-950/40 shadow-sm' 
+                    : 'border-slate-200 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-900/40 hover:border-slate-300 dark:hover:border-slate-700'
+                ]"
+              >
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 shrink-0">
+                      {{ result.group }}
+                    </span>
+                    <span class="text-sm font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate" v-html="result.highlightedTitle"></span>
+                  </div>
+                  <span class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-100/70 dark:bg-blue-900/50 px-2 py-0.5 rounded-full shrink-0">
+                    {{ result.matchCount }} {{ result.matchCount === 1 ? 'match' : 'matches' }}
+                  </span>
+                </div>
+
+                <div v-if="result.heading" class="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300 pl-1 font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500 shrink-0"><line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/></svg>
+                  <span v-html="result.highlightedHeading"></span>
+                </div>
+
+                <p v-if="result.snippet" class="text-xs text-slate-500 dark:text-slate-400 pl-1 line-clamp-2 leading-relaxed" v-html="result.highlightedSnippet"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer with Keyboard Shortcuts -->
+          <div class="px-4 py-3 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-4">
+              <span class="inline-flex items-center gap-1">
+                <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono text-[10px] shadow-sm">&crarr;</kbd>
+                Select
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono text-[10px] shadow-sm">&uarr;</kbd>
+                <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono text-[10px] shadow-sm">&darr;</kbd>
+                Navigate
+              </span>
+              <span class="inline-flex items-center gap-1">
+                <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono text-[10px] shadow-sm">esc</kbd>
+                Close
+              </span>
+            </div>
+            <div class="hidden sm:flex items-center gap-1.5 text-slate-400 dark:text-slate-500 font-medium">
+              <span>Genlytics v1.0.0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </div>
+
+  <!-- CDN Dependencies -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

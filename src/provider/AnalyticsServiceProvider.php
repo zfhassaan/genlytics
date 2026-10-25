@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use zfhassaan\genlytics\Contracts\AnalyticsRepositoryInterface;
 use zfhassaan\genlytics\Contracts\CacheManagerInterface;
 use zfhassaan\genlytics\Contracts\DataTransformerInterface;
+use zfhassaan\genlytics\Contracts\QuotaManagerInterface;
 use zfhassaan\genlytics\Events\AnalyticsCacheUpdated;
 use zfhassaan\genlytics\Genlytics;
 use zfhassaan\genlytics\Listeners\UpdateRealTimeCache;
@@ -14,6 +15,8 @@ use zfhassaan\genlytics\Repositories\AnalyticsRepository;
 use zfhassaan\genlytics\Services\AnalyticsService;
 use zfhassaan\genlytics\Services\CacheManager;
 use zfhassaan\genlytics\Services\DataTransformer;
+use zfhassaan\genlytics\Services\QuotaManager;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Analytics Service Provider
@@ -31,39 +34,78 @@ class AnalyticsServiceProvider extends ServiceProvider
 
         // Register Cache Manager
         $this->app->singleton(CacheManagerInterface::class, function ($app) {
-            $lifetime = config('analytics.cache_lifetime_in_minutes', 1440) * 60; // Convert to seconds
-            return new CacheManager('genlytics', $lifetime);
+            $prefix = config('analytics.cache.prefix', 'genlytics');
+            $store = config('analytics.cache.store');
+            $useTags = (bool) config('analytics.cache.use_tags', true);
+
+            $ttls = config('analytics.cache.ttl', []);
+            if (!is_array($ttls)) {
+                $ttls = [];
+            }
+
+            $legacyMinutes = config('analytics.cache_lifetime_in_minutes');
+            if ($legacyMinutes !== null && (int) $legacyMinutes !== 1440) {
+                $ttls['default'] = (int) $legacyMinutes * 60;
+            } elseif ($defaultTtl = config('analytics.cache.default_ttl')) {
+                $ttls['default'] = (int) $defaultTtl;
+            } else {
+                $ttls['default'] = 86400;
+            }
+
+            return new CacheManager($prefix, $ttls, $store, $useTags);
         });
 
         // Register Data Transformer
         $this->app->singleton(DataTransformerInterface::class, DataTransformer::class);
 
+        // Register Quota Manager
+        $this->app->singleton(QuotaManagerInterface::class, function ($app) {
+            $cacheStore = config('analytics.cache.store');
+            $cache = $cacheStore ? Cache::store($cacheStore) : Cache::store();
+            $quotaConfig = (array) config('analytics.quota', []);
+
+            return new QuotaManager($cache, $quotaConfig);
+        });
+        $this->app->alias(QuotaManagerInterface::class, QuotaManager::class);
+
         // Register Analytics Repository
         $this->app->singleton(AnalyticsRepositoryInterface::class, function ($app) {
             $propertyId = 'properties/' . config('analytics.property_id');
+            $credentials = config('analytics.service_account_credentials_json');
 
-            // Get credentials path from config
-            $credentialsPath = config('analytics.service_account_credentials_json');
-
-            // Initialize client with credentials if available
             $clientOptions = [];
-            if ($credentialsPath && file_exists($credentialsPath)) {
-                $clientOptions['credentials'] = $credentialsPath;
+            if ($credentials) {
+                if (is_array($credentials) || (is_string($credentials) && file_exists($credentials))) {
+                    $clientOptions['credentials'] = $credentials;
+                }
+            }
+
+            $transport = config('analytics.transport', 'rest');
+            if ($transport) {
+                $clientOptions['transport'] = $transport;
             }
 
             $client = new BetaAnalyticsDataClient($clientOptions);
-            return new AnalyticsRepository($client, $propertyId);
+            $quotaManager = $app->make(QuotaManagerInterface::class);
+            return new AnalyticsRepository($client, $propertyId, $quotaManager);
         });
 
         // Register Analytics Service
         $this->app->singleton(AnalyticsService::class, function ($app) {
+            $useBackgroundJobs = (bool) config('analytics.queue.enabled', config('analytics.use_background_jobs', false));
+            $enableCache = (bool) config('analytics.cache.enabled', config('analytics.enable_cache', true));
+            $enableRealtime = (bool) config('analytics.enable_realtime_updates', false);
+            $lockDuration = (int) config('analytics.cache.lock_duration', 60);
+
             return new AnalyticsService(
                 $app->make(AnalyticsRepositoryInterface::class),
                 $app->make(CacheManagerInterface::class),
                 $app->make(DataTransformerInterface::class),
-                config('analytics.use_background_jobs', true),
-                config('analytics.enable_cache', true),
-                config('analytics.enable_realtime_updates', true)
+                $useBackgroundJobs,
+                $enableCache,
+                $enableRealtime,
+                $lockDuration,
+                $app->make(QuotaManagerInterface::class)
             );
         });
 
@@ -100,11 +142,12 @@ class AnalyticsServiceProvider extends ServiceProvider
             // Register commands
             $this->commands([
                 \zfhassaan\genlytics\Commands\RefreshAnalyticsCache::class,
+                \zfhassaan\genlytics\Commands\ConsumeDailyQuota::class,
             ]);
         }
 
         // Register event listeners
-        if (config('analytics.enable_realtime_updates', true)) {
+        if (config('analytics.enable_realtime_updates', false)) {
             $this->app['events']->listen(
                 AnalyticsCacheUpdated::class,
                 UpdateRealTimeCache::class
