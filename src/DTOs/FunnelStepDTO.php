@@ -11,14 +11,14 @@ use JsonSerializable;
 class FunnelStepDTO implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public readonly int $step,
-        public readonly string $name,
-        public readonly string $eventName,
-        public readonly int $count,
-        public readonly int $dropOffCount,
-        public readonly float $dropOffRate,
-        public readonly float $conversionRate,
-        public readonly float $overallConversionRate
+        public int $step,
+        public string $name,
+        public string $eventName,
+        public int $count,
+        public int $dropOffCount,
+        public float $dropOffRate,
+        public float $conversionRate,
+        public float $overallConversionRate
     ) {
     }
 

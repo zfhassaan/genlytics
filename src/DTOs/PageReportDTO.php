@@ -11,11 +11,11 @@ use JsonSerializable;
 class PageReportDTO implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public readonly string $path,
-        public readonly string $title,
-        public readonly int $views,
-        public readonly int $activeUsers,
-        public readonly float $averageDuration = 0.0
+        public string $path,
+        public string $title,
+        public int $views,
+        public int $activeUsers,
+        public float $averageDuration = 0.0
     ) {
     }
 

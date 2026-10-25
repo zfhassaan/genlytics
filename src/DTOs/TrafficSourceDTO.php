@@ -11,11 +11,11 @@ use JsonSerializable;
 class TrafficSourceDTO implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public readonly string $source,
-        public readonly string $medium,
-        public readonly int $sessions,
-        public readonly int $activeUsers,
-        public readonly float $bounceRate = 0.0
+        public string $source,
+        public string $medium,
+        public int $sessions,
+        public int $activeUsers,
+        public float $bounceRate = 0.0
     ) {
     }
 

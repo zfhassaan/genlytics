@@ -11,9 +11,9 @@ use JsonSerializable;
 class CountryReportDTO implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public readonly string $country,
-        public readonly int $activeUsers,
-        public readonly int $sessions
+        public string $country,
+        public int $activeUsers,
+        public int $sessions
     ) {
     }
 

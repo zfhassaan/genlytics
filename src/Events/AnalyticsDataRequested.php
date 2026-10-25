@@ -20,9 +20,9 @@ class AnalyticsDataRequested
      * @param bool $forceRefresh Whether to bypass cache
      */
     public function __construct(
-        public readonly string $reportType,
-        public readonly array $parameters,
-        public readonly bool $forceRefresh = false
+        public string $reportType,
+        public array $parameters,
+        public bool $forceRefresh = false
     ) {
     }
 }

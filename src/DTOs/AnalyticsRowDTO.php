@@ -15,8 +15,8 @@ class AnalyticsRowDTO implements Arrayable, JsonSerializable
      * @param array<string, mixed> $metrics
      */
     public function __construct(
-        public readonly array $dimensions = [],
-        public readonly array $metrics = []
+        public array $dimensions = [],
+        public array $metrics = []
     ) {
     }
 

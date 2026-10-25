@@ -24,9 +24,9 @@ class QuotaUsageUpdated implements ShouldBroadcastNow
      * @param string $channel Channel name to broadcast on
      */
     public function __construct(
-        public readonly QuotaStatusDTO $status,
-        public readonly int $tokensConsumed = 0,
-        public readonly string $channel = 'genlytics-quota'
+        public QuotaStatusDTO $status,
+        public int $tokensConsumed = 0,
+        public string $channel = 'genlytics-quota'
     ) {
     }
 

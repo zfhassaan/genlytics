@@ -20,9 +20,9 @@ class AnalyticsQueryFailed
      * @param Throwable $exception The exception that occurred
      */
     public function __construct(
-        public readonly string $reportType,
-        public readonly array $parameters,
-        public readonly Throwable $exception
+        public string $reportType,
+        public array $parameters,
+        public Throwable $exception
     ) {
     }
 }

@@ -3,17 +3,21 @@
     "description": "Genlytics is a powerful Google Analytics Composer package that allows for easy data collection, analysis, and visualization. Optimized for SEO, it helps improve website performance and drive more organic traffic.",
     "type": "library",
     "require": {
-        "google/apiclient": "^2.12",
-        "php": "^8.1",
-        "google/analytics-data": "^0.9.0",
-        "google/gax": "^1.18",
-        "google/common-protos": "^1.3.1||^2.0||^3.0",
-        "google/longrunning": "^0.2",
-        "grpc/grpc": "^1.13",
-        "google/protobuf": "^3.21",
-        "google/cloud-core": "^v1.48.1",
-        "google/grpc-gcp": "^0.2.1",
-        "google/auth": "^v1.24.0"
+        "php": "^8.0 || ^8.1 || ^8.2 || ^8.3 || ^8.4 || ^8.5 || ^8.6",
+        "google/analytics-data": "^0.9.0 || ^0.10 || ^0.11 || ^0.12 || ^1.0",
+        "google/apiclient": "^2.12 || ^3.0",
+        "google/auth": "^v1.24.0 || ^2.0",
+        "google/cloud-core": "^v1.48.1 || ^2.0",
+        "google/common-protos": "^1.3.1 || ^2.0 || ^3.0 || ^4.0",
+        "google/gax": "^1.18 || ^1.30 || ^1.40 || ^1.50",
+        "google/grpc-gcp": "^0.2.1 || ^0.3 || ^0.4",
+        "google/longrunning": "^0.2 || ^0.3 || ^0.4",
+        "google/protobuf": "^3.21 || ^4.0 || ^5.0 || ^6.0",
+        "grpc/grpc": "^1.13 || ^1.40 || ^1.50 || ^1.60",
+        "illuminate/contracts": "^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/http": "^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "illuminate/support": "^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "nesbot/carbon": "^2.63 || ^3.0 || ^4.0"
     },
     "license": "MIT",
     "autoload": {
@@ -27,9 +31,25 @@
         }
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0|^9.0|^10.0",
-        "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0",
-        "mockery/mockery": "^1.5"
+        "mockery/mockery": "^1.5 || ^1.6",
+        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0"
+    },
+    "config": {
+        "sort-packages": true,
+        "audit": {
+            "block": false,
+            "abandoned": "report"
+        },
+        "policy": {
+            "advisories": {
+                "block": false,
+                "ignore": [
+                    "google/protobuf",
+                    "laravel/framework"
+                ]
+            }
+        }
     },
     "authors": [
         {

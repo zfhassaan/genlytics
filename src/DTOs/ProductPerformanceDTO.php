@@ -11,15 +11,15 @@ use JsonSerializable;
 class ProductPerformanceDTO implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly string $category,
-        public readonly float $revenue,
-        public readonly int $itemsPurchased,
-        public readonly int $itemsViewed,
-        public readonly int $itemsAddedToCart,
-        public readonly float $cartToViewRate = 0.0,
-        public readonly float $purchaseToViewRate = 0.0
+        public string $id,
+        public string $name,
+        public string $category,
+        public float $revenue,
+        public int $itemsPurchased,
+        public int $itemsViewed,
+        public int $itemsAddedToCart,
+        public float $cartToViewRate = 0.0,
+        public float $purchaseToViewRate = 0.0
     ) {
     }
 

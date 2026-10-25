@@ -19,11 +19,11 @@ class FunnelPipelineDTO implements Arrayable, JsonSerializable
      * @param Collection<int, FunnelStepDTO> $steps
      */
     public function __construct(
-        public readonly string $name,
-        public readonly int $totalEntries,
-        public readonly int $totalCompletions,
-        public readonly float $overallConversionRate,
-        public readonly Collection $steps
+        public string $name,
+        public int $totalEntries,
+        public int $totalCompletions,
+        public float $overallConversionRate,
+        public Collection $steps
     ) {
     }
 

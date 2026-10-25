@@ -20,10 +20,10 @@ class AnalyticsDataFetched
      * @param bool $fromCache Whether data came from cache
      */
     public function __construct(
-        public readonly string $reportType,
-        public readonly array $data,
-        public readonly array $parameters,
-        public readonly bool $fromCache = false
+        public string $reportType,
+        public array $data,
+        public array $parameters,
+        public bool $fromCache = false
     ) {
     }
 }

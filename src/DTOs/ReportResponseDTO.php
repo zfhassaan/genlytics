@@ -17,10 +17,10 @@ class ReportResponseDTO implements Arrayable, JsonSerializable
      * @param array $meta Additional metadata
      */
     public function __construct(
-        public readonly array $data,
-        public readonly string $reportType = 'report',
-        public readonly bool $fromCache = false,
-        public readonly array $meta = []
+        public array $data,
+        public string $reportType = 'report',
+        public bool $fromCache = false,
+        public array $meta = []
     ) {
     }
 

@@ -6,8 +6,8 @@
 
 ## Requirements
 
-- **PHP**: 8.1 or higher (PHP 8.2 & 8.3 fully supported)
-- **Laravel**: 10.x, 11.x, or 12.x
+- **PHP**: 8.0 or higher (PHP 8.0, 8.1, 8.2, 8.3, 8.4, 8.5, and 8.6 fully supported)
+- **Laravel**: 10.x, 11.x, 12.x, or 13.x
 - A **Google Analytics 4** property (Universal Analytics is retired)
 - A **Google Cloud Platform (GCP)** project with Analytics Data API enabled
 - A GCP Service Account JSON credential key

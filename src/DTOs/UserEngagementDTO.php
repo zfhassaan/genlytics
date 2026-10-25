@@ -11,11 +11,11 @@ use JsonSerializable;
 class UserEngagementDTO implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public readonly int $activeUsers,
-        public readonly int $newUsers,
-        public readonly int $engagedSessions,
-        public readonly float $engagementRate,
-        public readonly float $engagementDuration
+        public int $activeUsers,
+        public int $newUsers,
+        public int $engagedSessions,
+        public float $engagementRate,
+        public float $engagementDuration
     ) {
     }
 

@@ -11,9 +11,9 @@ use JsonSerializable;
 class DeviceCategoryDTO implements Arrayable, JsonSerializable
 {
     public function __construct(
-        public readonly string $category,
-        public readonly int $activeUsers,
-        public readonly int $sessions
+        public string $category,
+        public int $activeUsers,
+        public int $sessions
     ) {
     }
 

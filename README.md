@@ -42,7 +42,7 @@ Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel, completely
 
 ## Requirements
 
-- PHP 8.1 or higher
+- PHP 8.0 to 8.6
 - Laravel 9.0 or higher
 - Google Analytics 4 (GA4) property
 - Google Cloud Platform project with Analytics Data API enabled
