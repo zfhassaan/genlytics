@@ -42,4 +42,3 @@ class ReportResponseDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

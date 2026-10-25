@@ -101,4 +101,3 @@ class ConsumeDailyQuotaTest extends TestCase
         parent::tearDown();
     }
 }
-

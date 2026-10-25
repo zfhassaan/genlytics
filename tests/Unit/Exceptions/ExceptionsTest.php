@@ -48,4 +48,3 @@ class ExceptionsTest extends TestCase
         $this->assertEquals('Custom validation error', $custom->getMessage());
     }
 }
-

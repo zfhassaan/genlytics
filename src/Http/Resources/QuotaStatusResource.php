@@ -63,4 +63,3 @@ class QuotaStatusResource extends JsonResource
         ];
     }
 }
-

@@ -26,4 +26,3 @@ class CountryReportResource extends JsonResource
         return CountryReportDTO::fromRow($row)->toArray();
     }
 }
-

@@ -49,4 +49,3 @@ class TrafficSourceDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

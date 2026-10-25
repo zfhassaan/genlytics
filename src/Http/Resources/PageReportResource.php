@@ -26,4 +26,3 @@ class PageReportResource extends JsonResource
         return PageReportDTO::fromRow($row)->toArray();
     }
 }
-

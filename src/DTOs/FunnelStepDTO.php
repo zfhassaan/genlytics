@@ -41,4 +41,3 @@ class FunnelStepDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

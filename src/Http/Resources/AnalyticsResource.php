@@ -47,4 +47,3 @@ class AnalyticsResource extends JsonResource
         return (array) $this->resource;
     }
 }
-

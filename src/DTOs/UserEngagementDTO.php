@@ -48,4 +48,3 @@ class UserEngagementDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

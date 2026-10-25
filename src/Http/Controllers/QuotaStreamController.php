@@ -64,4 +64,3 @@ class QuotaStreamController
         return $response;
     }
 }
-

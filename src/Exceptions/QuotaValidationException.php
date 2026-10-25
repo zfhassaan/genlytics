@@ -49,4 +49,3 @@ class QuotaValidationException extends InvalidArgumentException
         return $this->expected;
     }
 }
-

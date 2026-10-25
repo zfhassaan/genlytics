@@ -49,4 +49,3 @@ class PageReportDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

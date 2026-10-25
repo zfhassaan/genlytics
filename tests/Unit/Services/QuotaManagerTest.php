@@ -273,4 +273,3 @@ class QuotaManagerTest extends TestCase
         $this->assertEquals('Network timeout during drain', $report['errors'][0]);
     }
 }
-

@@ -43,4 +43,3 @@ class CountryReportDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

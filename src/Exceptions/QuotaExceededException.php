@@ -58,4 +58,3 @@ class QuotaExceededException extends Exception
         return $this->resetInSeconds;
     }
 }
-

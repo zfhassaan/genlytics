@@ -25,4 +25,3 @@ class FunnelPipelineResource extends JsonResource
         return (array) $this->resource;
     }
 }
-

@@ -53,4 +53,3 @@ class QuotaStatusDTOTest extends TestCase
         $this->assertEquals(150000, $response['data']['daily_tokens']['remaining']);
     }
 }
-

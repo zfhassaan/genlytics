@@ -43,4 +43,3 @@ class DeviceCategoryDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

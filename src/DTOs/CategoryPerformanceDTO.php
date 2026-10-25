@@ -56,4 +56,3 @@ class CategoryPerformanceDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

@@ -19,4 +19,3 @@ if (!$loaded) {
 }
 
 $loader->addPsr4('zfhassaan\\genlytics\\Tests\\', __DIR__ . '/');
-

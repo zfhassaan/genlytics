@@ -26,4 +26,3 @@ class CategoryPerformanceResource extends JsonResource
         return CategoryPerformanceDTO::fromRow($row)->toArray();
     }
 }
-

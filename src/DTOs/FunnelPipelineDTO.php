@@ -43,4 +43,3 @@ class FunnelPipelineDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

@@ -26,4 +26,3 @@ class ProductPerformanceResource extends JsonResource
         return ProductPerformanceDTO::fromRow($row)->toArray();
     }
 }
-

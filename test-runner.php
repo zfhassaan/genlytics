@@ -50,4 +50,4 @@ if (!$hasConfig && file_exists($configPath)) {
 
 $phpunitArgs = array_merge(['phpunit'], $configArgs, $passedArgs, $testFiles);
 
-exit((new PHPUnit\TextUI\Application)->run($phpunitArgs));
+exit((new PHPUnit\TextUI\Application())->run($phpunitArgs));

@@ -26,4 +26,3 @@ class TrafficSourceResource extends JsonResource
         return TrafficSourceDTO::fromRow($row)->toArray();
     }
 }
-

@@ -39,4 +39,3 @@ class AnalyticsResourceCollection extends ResourceCollection
         ];
     }
 }
-

@@ -121,4 +121,3 @@ class ConsumeDailyQuota extends Command
         return Command::SUCCESS;
     }
 }
-

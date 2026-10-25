@@ -68,4 +68,3 @@ class ProductPerformanceDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-

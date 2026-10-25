@@ -223,4 +223,3 @@ class AnalyticsDTOTest extends TestCase
         $this->assertEquals(1000, $pipeline->jsonSerialize()['total_entries']);
     }
 }
-

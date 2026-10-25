@@ -84,4 +84,3 @@ class AnalyticsRowDTO implements Arrayable, JsonSerializable
         return $this->toArray();
     }
 }
-
