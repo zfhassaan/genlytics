@@ -7,7 +7,9 @@
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![Tests](https://github.com/zfhassaan/genlytics/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/zfhassaan/genlytics/actions/workflows/tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/zfhassaan/genlytics.svg?style=flat-square)](https://packagist.org/packages/zfhassaan/genlytics)
-![Laravel 10–12](https://img.shields.io/badge/Laravel-10.x%20%7C%2011.x%20%7C%2012.x-FF2D20?style=flat-square&logo=laravel&logoColor=white)
+![Laravel 10–13](https://img.shields.io/badge/Laravel-10.x%20%7C%2011.x%20%7C%2012.x%20%7C%2013.x-FF2D20?style=flat-square&logo=laravel&logoColor=white)
+[![PHP 8.0–8.6](https://img.shields.io/badge/PHP-8.0%20to%208.6-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
+[![Coverage](https://img.shields.io/badge/coverage-90.43%25-brightgreen.svg?style=flat-square)](https://zfhassaan.github.io/genlytics/)
 
 ### Disclaimer 
 The Google UA Property is going away from July 2023. Google is implementing the Google Analytics V4. 
@@ -42,8 +44,8 @@ Genlytics is a powerful Google Analytics 4 (GA4) package for Laravel, completely
 
 ## Requirements
 
-- PHP 8.0 to 8.6
-- Laravel 9.0 or higher
+- **PHP**: ^8.0 || ^8.1 || ^8.2 || ^8.3 || ^8.4 || ^8.5 || ^8.6
+- **Laravel Framework**: 10.x, 11.x, 12.x, and 13.x
 - Google Analytics 4 (GA4) property
 - Google Cloud Platform project with Analytics Data API enabled
 - Service account with Analytics access
@@ -125,7 +127,73 @@ See [Installation Guide](wiki/Installation-Guide.md) for detailed steps.
 
 ## Usage
 
-### Basic Usage
+### 🚀 Eloquent-Style Fluent Query Builder (Recommended)
+
+Genlytics provides a fluent, expressive query builder modeled after Laravel's Eloquent ORM:
+
+```php
+use zfhassaan\genlytics\facades\AnalyticsFacade as Genlytics;
+
+// 1. Fluent queries with pre-defined date macros
+$data = Genlytics::query()
+    ->last7Days()
+    ->dimensions(['country', 'city'])
+    ->metrics(['activeUsers', 'sessions'])
+    ->orderByDesc('activeUsers')
+    ->limit(10)
+    ->remember(3600) // Cache query for 1 hour
+    ->get();
+
+// 2. Direct Strongly-Typed DTO Casting
+$pageDtos = Genlytics::query()->last30Days()->toPageDto();
+foreach ($pageDtos as $page) {
+    echo "{$page->path}: {$page->views} views
+";
+}
+
+// 3. Direct Standardized Laravel API Resource Casting (with SemVer envelope)
+return Genlytics::query()->last7Days()->toPageResource();
+```
+
+### 🛒 E-Commerce & Conversion Funnel Pipelines
+
+Analyze GA4 multi-step conversion funnels, top products, and categories with zero boilerplate:
+
+```php
+// Default GA4 purchase funnel (view_item -> add_to_cart -> checkout -> purchase)
+$funnel = Genlytics::ecommerceFunnel('30daysAgo');
+echo "Overall conversion: {$funnel->overallConversionRate}%
+";
+
+// Top products by revenue
+$products = Genlytics::topProducts(limit: 10, period: 'last30Days');
+
+// Top product categories
+$categories = Genlytics::topCategories(limit: 10, period: 'last30Days');
+```
+
+### ⚡ Batch Multi-Reporting API
+
+Fetch multiple distinct widget queries in a single HTTP request to eliminate GA4 quota overhead:
+
+```php
+$batch = Genlytics::getBatchReports([
+    'top_pages' => [
+        'period' => 'last7Days',
+        'dimensions' => ['pagePath'],
+        'metrics' => ['screenPageViews'],
+        'limit' => 5
+    ],
+    'top_countries' => [
+        'period' => 'last7Days',
+        'dimensions' => ['country'],
+        'metrics' => ['activeUsers'],
+        'limit' => 5
+    ]
+]);
+```
+
+### Basic / Direct Usage
 
 ```php
 use zfhassaan\genlytics\Genlytics;

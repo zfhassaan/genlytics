@@ -61,3 +61,10 @@ Yes, Genlytics can be used in Lumen by manually registering the service provider
 $app->register(zfhassaan\genlytics\provider\AnalyticsServiceProvider::class);
 ```
 
+---
+
+### 6. Which versions of Laravel and PHP are supported?
+Genlytics fully supports **Laravel 10.x, 11.x, 12.x, and 13.x** on **PHP 8.0, 8.1, 8.2, 8.3, 8.4, 8.5, and 8.6**.
+All core contracts and Illuminate dependencies are strictly decoupled, allowing seamless upgrades across major framework versions without dependency conflicts.
+
+

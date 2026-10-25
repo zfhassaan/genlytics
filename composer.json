@@ -1,6 +1,18 @@
 {
     "name": "zfhassaan/genlytics",
     "description": "Genlytics is a powerful Google Analytics Composer package that allows for easy data collection, analysis, and visualization. Optimized for SEO, it helps improve website performance and drive more organic traffic.",
+    "keywords": [
+        "laravel",
+        "laravel 10",
+        "laravel 11",
+        "laravel 12",
+        "laravel 13",
+        "google-analytics-4",
+        "ga4",
+        "analytics",
+        "fluent-query",
+        "repository-pattern"
+    ],
     "type": "library",
     "require": {
         "php": "^8.0 || ^8.1 || ^8.2 || ^8.3 || ^8.4 || ^8.5 || ^8.6",
@@ -32,7 +44,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.5 || ^1.6",
-        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "orchestra/testbench": "^8.0 || ^9.0 || ^10.0 || ^11.0 || ^12.0",
         "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0"
     },
     "config": {
