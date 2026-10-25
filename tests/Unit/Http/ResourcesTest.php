@@ -32,8 +32,8 @@ class ResourcesTest extends TestCase
 {
     public function test_package_version_constant()
     {
-        $this->assertEquals('1.1.0', Genlytics::VERSION);
-        $this->assertEquals('1.1.0', Genlytics::version());
+        $this->assertEquals('1.0.5', Genlytics::VERSION);
+        $this->assertEquals('1.0.5', Genlytics::version());
     }
 
     public function test_analytics_resource_contains_version_and_branches()
@@ -45,8 +45,8 @@ class ResourcesTest extends TestCase
         $resource = new AnalyticsResource($dto);
         $withData = $resource->with($request);
         $this->assertTrue($withData['success']);
-        $this->assertEquals('1.1.0', $withData['version']);
-        $this->assertEquals('1.1.0', $withData['meta']['version']);
+        $this->assertEquals('1.0.5', $withData['version']);
+        $this->assertEquals('1.0.5', $withData['meta']['version']);
         $this->assertArrayHasKey('timestamp', $withData['meta']);
 
         $resArray = $resource->toArray($request);
@@ -89,14 +89,14 @@ class ResourcesTest extends TestCase
         $withData = $collection->with($request);
 
         $this->assertTrue($withData['success']);
-        $this->assertEquals('1.1.0', $withData['version']);
+        $this->assertEquals('1.0.5', $withData['version']);
         $this->assertEquals(2, $withData['meta']['count']);
-        $this->assertEquals('1.1.0', $withData['meta']['version']);
+        $this->assertEquals('1.0.5', $withData['meta']['version']);
 
         $response = $collection->toResponse($request);
         $this->assertInstanceOf(JsonResponse::class, $response);
         $data = $response->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertCount(2, $data['data']);
     }
 
@@ -108,7 +108,7 @@ class ResourcesTest extends TestCase
         $dto = new PageReportDTO('/home', 'Home Page', 500, 250, 45.5);
         $resource = new PageReportResource($dto);
         $data = $resource->toResponse($request)->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertEquals('/home', $data['data']['path']);
 
         // From Raw Row
@@ -128,7 +128,7 @@ class ResourcesTest extends TestCase
         $dto = new CountryReportDTO('Germany', 300, 450);
         $resource = new CountryReportResource($dto);
         $data = $resource->toResponse($request)->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertEquals('Germany', $data['data']['country']);
 
         $row = [
@@ -147,7 +147,7 @@ class ResourcesTest extends TestCase
         $dto = new TrafficSourceDTO('google', 'organic', 1000, 850, 0.35);
         $resource = new TrafficSourceResource($dto);
         $data = $resource->toResponse($request)->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertEquals('google', $data['data']['source']);
 
         $row = [
@@ -166,7 +166,7 @@ class ResourcesTest extends TestCase
         $dto = new ProductPerformanceDTO('P1', 'Pro Laptop', 'Electronics', 1299.99, 5, 20, 8);
         $resource = new ProductPerformanceResource($dto);
         $data = $resource->toResponse($request)->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertEquals('Pro Laptop', $data['data']['name']);
 
         $row = [
@@ -185,7 +185,7 @@ class ResourcesTest extends TestCase
         $dto = new CategoryPerformanceDTO('Apparel', 5400.0, 120, 450, 0.26);
         $resource = new CategoryPerformanceResource($dto);
         $data = $resource->toResponse($request)->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertEquals('Apparel', $data['data']['category']);
 
         $row = [
@@ -204,7 +204,7 @@ class ResourcesTest extends TestCase
         $dto = new FunnelPipelineDTO('Purchase Funnel', 1000, 100, 10.0, collect([]));
         $resource = new FunnelPipelineResource($dto);
         $data = $resource->toResponse($request)->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertEquals('Purchase Funnel', $data['data']['name']);
 
         $row = [
@@ -228,7 +228,7 @@ class ResourcesTest extends TestCase
         $response = $resource->toResponse($request);
         $data = $response->getData(true);
 
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
         $this->assertEquals('standard', $data['data']['property_type']);
         $this->assertEquals('maximum_utilization', $data['data']['pacing']['mode']);
 
@@ -269,7 +269,7 @@ class ResourcesTest extends TestCase
         $jsonResponse = $builder->toResponse();
         $this->assertInstanceOf(JsonResponse::class, $jsonResponse);
         $data = $jsonResponse->getData(true);
-        $this->assertEquals('1.1.0', $data['version']);
+        $this->assertEquals('1.0.5', $data['version']);
     }
 
     public function test_genlytics_helper_resource_methods()
@@ -287,16 +287,16 @@ class ResourcesTest extends TestCase
         $mockService->shouldReceive('getReport')->times(4)->andReturn($mockData);
 
         $topPagesRes = $genlytics->topPagesResource(limit: 5);
-        $this->assertEquals('1.1.0', $topPagesRes->toResponse(Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $topPagesRes->toResponse(Request::create('/test'))->getData(true)['version']);
 
         $topCountriesRes = $genlytics->topCountriesResource(limit: 5);
-        $this->assertEquals('1.1.0', $topCountriesRes->toResponse(Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $topCountriesRes->toResponse(Request::create('/test'))->getData(true)['version']);
 
         $trafficRes = $genlytics->trafficSourcesResource(limit: 5);
-        $this->assertEquals('1.1.0', $trafficRes->toResponse(Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $trafficRes->toResponse(Request::create('/test'))->getData(true)['version']);
 
         $productsRes = $genlytics->topProductsResource(limit: 5);
-        $this->assertEquals('1.1.0', $productsRes->toResponse(Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $productsRes->toResponse(Request::create('/test'))->getData(true)['version']);
     }
 
     protected function tearDown(): void

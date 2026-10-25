@@ -272,7 +272,7 @@ class GenlyticsTest extends TestCase
 
     public function test_facade_version_and_resource_helpers()
     {
-        $this->assertEquals('1.1.0', \zfhassaan\genlytics\facades\AnalyticsFacade::version());
+        $this->assertEquals('1.0.5', \zfhassaan\genlytics\facades\AnalyticsFacade::version());
 
         $mockData = [
             [
@@ -284,10 +284,10 @@ class GenlyticsTest extends TestCase
         $this->mockService->shouldReceive('getReport')->twice()->andReturn($mockData);
 
         $countriesRes = $this->genlytics->topCountriesResource(limit: 5);
-        $this->assertEquals('1.1.0', $countriesRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $countriesRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
 
         $categoriesRes = $this->genlytics->topCategoriesResource(limit: 5);
-        $this->assertEquals('1.1.0', $categoriesRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $categoriesRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
     }
 
     public function test_funnel_and_quota_resource_helpers()
@@ -301,7 +301,7 @@ class GenlyticsTest extends TestCase
 
         $funnelRes = $this->genlytics->ecommerceFunnelResource();
         $this->assertInstanceOf(\zfhassaan\genlytics\Http\Resources\FunnelPipelineResource::class, $funnelRes);
-        $this->assertEquals('1.1.0', $funnelRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $funnelRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
 
         $mockQuota = Mockery::mock(\zfhassaan\genlytics\Contracts\QuotaManagerInterface::class);
         $mockQuota->shouldReceive('getStatus')->once()->andReturn(new \zfhassaan\genlytics\DTOs\QuotaStatusDTO(['property_type' => 'standard']));
@@ -309,7 +309,7 @@ class GenlyticsTest extends TestCase
 
         $quotaRes = $this->genlytics->quotaStatusResource();
         $this->assertInstanceOf(\zfhassaan\genlytics\Http\Resources\QuotaStatusResource::class, $quotaRes);
-        $this->assertEquals('1.1.0', $quotaRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $quotaRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
     }
 
     public function test_additional_resource_helpers_and_telemetry()
@@ -325,15 +325,15 @@ class GenlyticsTest extends TestCase
 
         // topPagesResource
         $pagesRes = $this->genlytics->topPagesResource(5);
-        $this->assertEquals('1.1.0', $pagesRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $pagesRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
 
         // trafficSourcesResource
         $trafficRes = $this->genlytics->trafficSourcesResource(5);
-        $this->assertEquals('1.1.0', $trafficRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $trafficRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
 
         // topProductsResource
         $prodRes = $this->genlytics->topProductsResource(5);
-        $this->assertEquals('1.1.0', $prodRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.5', $prodRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
 
         // getBatchReports
         $this->mockService->shouldReceive('getBatchReports')->once()->andReturn([$mockData]);

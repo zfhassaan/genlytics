@@ -159,7 +159,7 @@ composer run test:coverage-html
 | **`GenlyticsTest`** | 20 | 54 | Facade methods, e-commerce funnels, quota drain, resource helpers | `100% PASS` |
 | **`QuotaManagerTest`** | 17 | 79 | Quota tracking, concurrency locks, PST math, operational modes | `100% PASS` |
 | **`CacheManagerTest`** | 15 | 26 | Configurable TTL per report type, cache tags, custom durations | `100% PASS` |
-| **`ResourcesTest`** | 12 | 49 | Package versioning (`1.1.0`), API resource wrappers, envelope formats | `100% PASS` |
+| **`ResourcesTest`** | 12 | 49 | Package versioning (`1.0.5`), API resource wrappers, envelope formats | `100% PASS` |
 | **`AnalyticsServiceTest`** | 12 | 26 | Service orchestration, stale cache fallback, custom TTLs | `100% PASS` |
 | **`AnalyticsQueryBuilderTest`** | 11 | 27 | Fluent query builder, date scopes, casting to DTOs & API resources | `100% PASS` |
 | **`AnalyticsRepositoryTest`** | 11 | 13 | GA4 Data API client integration, concurrency slots, batch runs | `100% PASS` |

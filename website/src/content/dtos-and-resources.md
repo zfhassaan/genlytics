@@ -70,13 +70,13 @@ return Genlytics::query()->last7Days()->toResponse();
 
 ## 4. Standardized API Resources with Embedded Package Version
 
-All Genlytics API Resources implement `HasGenlyticsVersion`. When returned from Laravel controllers or serialized to JSON, they automatically include the active **package version** (`1.1.0`), success status, count, and ISO 8601 timestamps.
+All Genlytics API Resources implement `HasGenlyticsVersion`. When returned from Laravel controllers or serialized to JSON, they automatically include the active **package version** (`1.0.5`), success status, count, and ISO 8601 timestamps.
 
 ### Output JSON Format:
 ```json
 {
   "success": true,
-  "version": "1.1.0",
+  "version": "1.0.5",
   "data": [
     {
       "dimensions": {
@@ -90,7 +90,7 @@ All Genlytics API Resources implement `HasGenlyticsVersion`. When returned from 
     }
   ],
   "meta": {
-    "version": "1.1.0",
+    "version": "1.0.5",
     "count": 1,
     "timestamp": "2026-10-25T10:40:07+00:00"
   }
@@ -111,7 +111,7 @@ use zfhassaan\genlytics\facades\AnalyticsFacade as Genlytics;
 
 class AnalyticsApiController extends Controller
 {
-    // Return Top Pages with version 1.1.0 envelope:
+    // Return Top Pages with version 1.0.5 envelope:
     public function pages()
     {
         return Genlytics::topPagesResource(limit: 10);

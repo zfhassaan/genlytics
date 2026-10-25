@@ -5,7 +5,7 @@ return [
     /*
      * Genlytics package version
      */
-    'version' => env('GENLYTICS_VERSION', '1.1.0'),
+    'version' => env('GENLYTICS_VERSION', '1.0.5'),
 
     /*
      * The property ID of your Google Analytics 4 property.
