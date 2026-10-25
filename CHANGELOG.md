@@ -2,6 +2,10 @@
 
 All notable changes to `genlytics` will be documented in this file.
 
+## v1.0.5 - 2026-10-25
+
+**Full Changelog**: https://github.com/zfhassaan/genlytics/compare/v1.0.4...v1.0.5
+
 ## v1.0.4 - 2025-12-05
 
 ### Major Release - Complete Package Rewrite
@@ -28,31 +32,38 @@ This release represents a complete architectural overhaul of the Genlytics packa
 #### New Components
 
 **Contracts (Interfaces)**
+
 - `AnalyticsRepositoryInterface`: Data access contract
 - `CacheManagerInterface`: Caching operations contract
 - `DataTransformerInterface`: Data transformation contract
 
 **Repositories**
+
 - `AnalyticsRepository`: Optimized implementation with efficient query building
 
 **Services**
+
 - `AnalyticsService`: Main orchestration service
 - `CacheManager`: Intelligent caching with TTL management
 - `DataTransformer`: Robust data transformation with error handling
 
 **Events**
+
 - `AnalyticsDataRequested`: Fired when data is requested
 - `AnalyticsDataFetched`: Fired when data is successfully fetched
 - `AnalyticsCacheUpdated`: Fired when cache is updated
 - `AnalyticsQueryFailed`: Fired when queries fail
 
 **Jobs**
+
 - `FetchAnalyticsDataJob`: Background processing for analytics queries
 
 **Commands**
+
 - `RefreshAnalyticsCache`: Artisan command for cache management (`genlytics:refresh-cache`)
 
 **Listeners**
+
 - `UpdateRealTimeCache`: Automatic real-time cache refresh listener
 
 #### Testing
