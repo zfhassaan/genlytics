@@ -1,0 +1,84 @@
+name: "Sync Release Version Everywhere"
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'VERSION'
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Target Version to sync (e.g. 1.0.6 or v1.0.6, leave empty to read from VERSION file)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  sync-version:
+    name: "Synchronize Version"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, json, curl
+          coverage: none
+
+      - name: Determine Target Version
+        id: version_step
+        run: |
+          TARGET=""
+          # 1. From workflow_dispatch manual input
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            TARGET="${{ github.event.inputs.version }}"
+          # 2. From Git Tag push (e.g. v1.0.6)
+          elif [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            TARGET="${GITHUB_REF#refs/tags/}"
+          # 3. From VERSION file
+          elif [ -f "VERSION" ]; then
+            TARGET=$(cat VERSION | tr -d '[:space:]')
+          else
+            TARGET="1.0.6"
+          fi
+
+          # Clean version (strip leading v)
+          CLEAN_VERSION=$(echo "$TARGET" | sed 's/^v//')
+          echo "version=$CLEAN_VERSION" >> $GITHUB_OUTPUT
+          echo "Target Version: $CLEAN_VERSION"
+
+      - name: Synchronize Version Across Codebase & Build Docs
+        run: |
+          node scripts/sync-version.cjs "${{ steps.version_step.outputs.version }}"
+
+      - name: Validate Composer Configuration
+        run: |
+          composer validate --no-check-all --strict
+
+      - name: Commit and Push Synchronized Version
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(release): bump and synchronize version to v${{ steps.version_step.outputs.version }} everywhere [skip ci]"
+          file_pattern: 'VERSION src/Genlytics.php config/analytics.php website/package.json website/src/content/*.md tests/Unit/*.php tests/Unit/**/*.php docs/*'
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+

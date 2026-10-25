@@ -1,6 +1,6 @@
 {
   "name": "genlytics-docs",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Genlytics Vue.js Documentation & Showcase Website",
   "scripts": {
     "build": "node build.js",

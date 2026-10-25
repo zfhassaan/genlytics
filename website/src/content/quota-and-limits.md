@@ -362,7 +362,7 @@ Genlytics includes comprehensive test suites covering all quota algorithms, conc
 | **`GenlyticsTest`** | 20 | 54 | `100% PASS` | Facade methods, e-commerce funnels, quota drainage, resource helpers |
 | **`QuotaManagerTest`** | 17 | 79 | `100% PASS` | Quota tracking, modes (`consume_all`, `maximum_utilization`), PST math, concurrency locks, validation exceptions |
 | **`CacheManagerTest`** | 15 | 26 | `100% PASS` | Configurable TTL per report type, cache tags, custom durations |
-| **`ResourcesTest`** | 12 | 49 | `100% PASS` | Package versioning (`1.0.5`), typed API resource envelopes, JSON responses |
+| **`ResourcesTest`** | 12 | 49 | `100% PASS` | Package versioning (`1.0.6`), typed API resource envelopes, JSON responses |
 | **`AnalyticsServiceTest`** | 12 | 26 | `100% PASS` | Service orchestration, stale cache fallback, custom TTLs |
 | **`AnalyticsQueryBuilderTest`** | 11 | 27 | `100% PASS` | Fluent chaining, `->consumeAllQuota()`, `->maxQuota()`, resource casting |
 | **`AnalyticsRepositoryTest`** | 11 | 13 | `100% PASS` | GA4 Data API client integration, concurrency slots, batch runs |

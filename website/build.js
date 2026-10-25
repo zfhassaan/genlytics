@@ -4,13 +4,22 @@ const path = require('path');
 const websiteDir = __dirname;
 const contentDir = path.join(websiteDir, 'src', 'content');
 const docsDir = path.join(websiteDir, '..', 'docs');
+const pkgDir = path.join(websiteDir, '..');
+
+// Load Version strictly from the VERSION file
+const versionFilePath = path.join(pkgDir, 'VERSION');
+let packageVersion = '1.0.5';
+if (fs.existsSync(versionFilePath)) {
+  packageVersion = fs.readFileSync(versionFilePath, 'utf8').trim();
+}
 
 // Ensure output docs directory exists
 if (!fs.existsSync(docsDir)) {
   fs.mkdirSync(docsDir, { recursive: true });
 }
 
-console.log('Building Genlytics Vue.js Documentation Website...');
+console.log(`Building Genlytics Vue.js Documentation Website (v${packageVersion})...`);
+console.log(`  ✓ Loaded active version from VERSION file: ${packageVersion}`);
 
 // Read all markdown files in src/content
 const docsContent = {};
@@ -31,7 +40,9 @@ const markdownFiles = [
 for (const name of markdownFiles) {
   const filePath = path.join(contentDir, `${name}.md`);
   if (fs.existsSync(filePath)) {
-    docsContent[name] = fs.readFileSync(filePath, 'utf8');
+    let raw = fs.readFileSync(filePath, 'utf8');
+    raw = raw.split('{{VERSION}}').join(packageVersion);
+    docsContent[name] = raw;
     console.log(`  ✓ Loaded content: ${name}.md (${docsContent[name].length} bytes)`);
   } else {
     console.warn(`  ! Warning: Missing ${filePath}`);
@@ -47,6 +58,7 @@ const docsContent = ${JSON.stringify(docsContent, null, 2)};
 
 const app = createApp({
   setup() {
+    const packageVersion = ref('${packageVersion}');
     const currentPage = ref('home');
     const lastDocPage = ref('getting-started');
     const isDarkMode = ref(false);
@@ -1037,7 +1049,8 @@ foreach (\\$pages as \\$page) {
       toggleMobileDocsDrawer,
       closeMobileDocsDrawer,
       getCurrentDocTitle,
-      getCurrentDocGroup
+      getCurrentDocGroup,
+      packageVersion
     };
   }
 });
@@ -1050,9 +1063,13 @@ fs.writeFileSync(path.join(websiteDir, 'app.js'), appJsContent);
 fs.writeFileSync(path.join(docsDir, 'app.js'), appJsContent);
 console.log('  ✓ Generated: app.js');
 
-// Copy index.html and style.css to docs
-fs.copyFileSync(path.join(websiteDir, 'index.html'), path.join(docsDir, 'index.html'));
-console.log('  ✓ Copied: index.html -> docs/index.html');
+// Copy index.html and style.css to docs with version interpolation
+let indexHtml = fs.readFileSync(path.join(websiteDir, 'index.html'), 'utf8');
+indexHtml = indexHtml.split('{{ packageVersion }}').join(packageVersion);
+indexHtml = indexHtml.split('{{packageVersion}}').join(packageVersion);
+indexHtml = indexHtml.split('{{VERSION}}').join(packageVersion);
+fs.writeFileSync(path.join(docsDir, 'index.html'), indexHtml);
+console.log('  ✓ Processed & Copied: index.html -> docs/index.html');
 
 fs.copyFileSync(path.join(websiteDir, 'style.css'), path.join(docsDir, 'style.css'));
 console.log('  ✓ Copied: style.css -> docs/style.css');

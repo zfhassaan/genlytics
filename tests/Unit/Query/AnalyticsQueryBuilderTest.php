@@ -273,21 +273,21 @@ class AnalyticsQueryBuilderTest extends TestCase
         $countryRes = $builder->toCountryResource();
         $response = $countryRes->toResponse(\Illuminate\Http\Request::create('/test'));
         $data = $response->getData(true);
-        $this->assertEquals('1.0.5', $data['version']);
+        $this->assertEquals('1.0.6', $data['version']);
         $this->assertEquals('Germany', $data['data'][0]['country']);
 
         // Traffic source resource
         $trafficRes = $builder->toTrafficSourceResource();
-        $this->assertEquals('1.0.5', $trafficRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.6', $trafficRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
 
         // Category resource
         $categoryRes = $builder->toCategoryResource();
-        $this->assertEquals('1.0.5', $categoryRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
+        $this->assertEquals('1.0.6', $categoryRes->toResponse(\Illuminate\Http\Request::create('/test'))->getData(true)['version']);
 
         // Direct toResponse()
         $jsonResp = $builder->toResponse();
         $this->assertInstanceOf(\Illuminate\Http\JsonResponse::class, $jsonResp);
-        $this->assertEquals('1.0.5', $jsonResp->getData(true)['version']);
+        $this->assertEquals('1.0.6', $jsonResp->getData(true)['version']);
     }
 
     public function test_query_builder_alias_methods_and_to_json()

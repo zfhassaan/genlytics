@@ -32,7 +32,7 @@ class Genlytics
     /**
      * Package version
      */
-    public const VERSION = '1.0.5';
+    public const VERSION = '1.0.6';
 
     protected AnalyticsService $service;
 
@@ -49,6 +49,14 @@ class Genlytics
      */
     public static function version(): string
     {
+        $versionFile = __DIR__ . '/../VERSION';
+        if (is_file($versionFile)) {
+            $version = trim((string) file_get_contents($versionFile));
+            if ($version !== '') {
+                return $version;
+            }
+        }
+
         return self::VERSION;
     }
 

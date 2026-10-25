@@ -76,6 +76,7 @@
         ],
         "test": "php test-runner.php",
         "test:coverage": "php -d xdebug.mode=coverage test-runner.php --coverage-text",
-        "test:coverage-html": "php -d xdebug.mode=coverage test-runner.php --coverage-html coverage"
+        "test:coverage-html": "php -d xdebug.mode=coverage test-runner.php --coverage-html coverage",
+        "sync:version": "node scripts/sync-version.cjs"
     }
 }
